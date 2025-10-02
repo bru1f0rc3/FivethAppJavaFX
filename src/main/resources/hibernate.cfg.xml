@@ -5,11 +5,11 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Set URL -->
-        <property name = "hibernate.connection.url">jdbc:postgresql://192.168.2.202:5432/demo10</property>
+        <property name = "hibernate.connection.url">jdbc:postgresql://localhost:5432/trade</property>
         <!-- Set User Name -->
-        <property name = "hibernate.connection.username">user10</property>
+        <property name = "hibernate.connection.username">postgres</property>
         <!-- Set Password -->
-        <property name = "hibernate.connection.password">DXU3F6</property>
+        <property name = "hibernate.connection.password">123123</property>
         <!-- Set Driver Name -->
         <property name = "hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name = "hibernate.show_sql">true</property>

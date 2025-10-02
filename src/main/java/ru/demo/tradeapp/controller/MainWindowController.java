@@ -15,6 +15,7 @@ import ru.demo.tradeapp.service.ProductService;
 import ru.demo.tradeapp.util.Manager;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class MainWindowController implements Initializable {
     private ComboBox<Category> CmboBoxProductType;
 
     @FXML
-    private ComboBox<?> ComboboxSort;
+    private ComboBox<String> ComboboxSort;
 
     @FXML
     private Label LabelInfo;
@@ -67,13 +68,61 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    void ComboboxSortAction(ActionEvent event) {
+    void TextFieldSearchAction(ActionEvent event) {
 
     }
 
     @FXML
-    void TextFieldSearchAction(ActionEvent event) {
+    void ComboboxSortAction(ActionEvent event) {
 
+    }
+
+    private void updateSearch() {
+        List<Product> products = productService.findAll();
+
+        Category selectedCategory = CmboBoxProductType.getValue();
+        if (selectedCategory != null && selectedCategory.getCategoryId() != 0) {
+            products = products.stream()
+                    .filter(product -> product.getCategory().getCategoryId().equals(selectedCategory.getCategoryId()))
+                    .collect(Collectors.toList());
+        }
+
+        String query = TextFieldSearch.getText().toLowerCase().trim();
+        if (!query.isEmpty()) {
+            products = products.stream()
+                    .filter(p -> p.getTitle().toLowerCase().contains(query))
+                    .collect(Collectors.toList());
+        }
+
+        String sort = ComboboxSort.getValue();
+        if (sort != null) {
+            switch (sort) {
+                case "По возрастанию":
+                    products.sort(Comparator.comparing(Product::getCost));
+                    break;
+                case "По убыванию":
+                    products.sort(Comparator.comparing(Product::getCost).reversed());
+                    break;
+                case "0%-9,99%":
+                    products = products.stream()
+                            .filter(product -> product.getDiscountAmount() >= 0 && product.getDiscountAmount() < 10)
+                            .collect(Collectors.toList());
+                    break;
+                case "10%-14,99%":
+                    products = products.stream()
+                            .filter(product -> product.getDiscountAmount() >= 10 && product.getDiscountAmount() < 15)
+                            .collect(Collectors.toList());
+                    break;
+                case "15% и более":
+                    products = products.stream()
+                            .filter(product -> product.getDiscountAmount() >= 15)
+                            .collect(Collectors.toList());
+                    break;
+            }
+        }
+
+        ListViewProducts.setItems(FXCollections.observableArrayList(products));
+        LabelInfo.setText(products.size() + " из " + (long) productService.findAll().size());
     }
 
 
@@ -85,7 +134,24 @@ public class MainWindowController implements Initializable {
         ObservableList<Category> categories = FXCollections.observableArrayList(categoryList);
         CmboBoxProductType.setItems(categories);
         loadProducts(null);
+        TextFieldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateSearch();
+        });
 
+        CmboBoxProductType.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateSearch();
+        });
+
+        ComboboxSort.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateSearch();
+        });
+        ObservableList<String> items = FXCollections.observableArrayList("Все диапазоны",
+                "0%-9,99%",
+                "10%-14,99%",
+                "15% и более",
+                "По возрастанию",
+                "По убыванию");
+        ComboboxSort.setItems(items);
     }
 
     public void loadProducts(Category category) {

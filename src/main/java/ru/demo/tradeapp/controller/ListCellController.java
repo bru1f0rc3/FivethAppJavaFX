@@ -33,22 +33,31 @@ public class ListCellController {
     private Label LabelPriceProduct;
 
     public void setProduct(Product product) throws IOException {
-
         ImageViewPhoto.setImage(product.getPhoto());
         LabelPercent.setText(product.getDiscountAmount().toString());
-        LabelPriceProduct.setText(product.getCost().toString());
+
         if (product.getDiscountAmount() >= 15) {
             String oldPrice = product.getCost().toString();
-            LabelPriceProduct.setStyle("-fx-background-color: #7fff00");
-            LabelPriceProduct.setText(oldPrice + "\t" + "aaaaaaaaa");
-            LabelPriceProduct.isUnderline();
+            LabelPriceProduct.setStyle("-fx-background-color: #7fff00;");
+
+            Text text = new Text(oldPrice);
+            text.setStrikethrough(true);
+            text.setFill(Color.BLACK);
+
+            Group group = new Group(text);
+            LabelPriceProduct.setGraphic(group);
+
+            double discountValue = product.getCost() * (product.getDiscountAmount() / 100.0);
+            double newPrice = product.getCost() - discountValue;
+            LabelPriceProduct.setText(String.format("%.2f",newPrice));
         }
+        else {
+            LabelPriceProduct.setText(product.getCost().toString());
+        }
+
         LabelDescription.setText(product.getDescription());
         LabelTitle.setText(product.getTitle());
         LabelManufacturer.setText(product.getManufacturer().getTitle());
-        LabelPriceProduct.setText(product.getCost().toString());
     }
-
-
 }
 
