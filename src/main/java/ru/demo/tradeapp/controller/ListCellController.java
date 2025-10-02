@@ -40,7 +40,7 @@ public class ListCellController {
         if (product.getDiscountAmount() >= 15) {
             String oldPrice = product.getCost().toString();
             LabelPriceProduct.setStyle("-fx-background-color: #7fff00");
-            LabelPriceProduct.setText(oldPrice + "\t" + );
+            LabelPriceProduct.setText(oldPrice + "\t" + "aaaaaaaaa");
             LabelPriceProduct.isUnderline();
         }
         LabelDescription.setText(product.getDescription());
