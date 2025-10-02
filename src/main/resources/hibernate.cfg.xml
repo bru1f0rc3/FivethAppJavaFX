@@ -16,6 +16,10 @@
         <!-- Optional: Auto-generate schema -->
         <!-- <property name = "hibernate.hbm2ddl.auto">create</property> -->
         <mapping class="ru.demo.tradeapp.model.User" />
-        <mapping class="ru.demo.tradeapp.model.Role" />
+        <mapping class="ru.demo.tradeapp.model.Category" />
+        <mapping class="ru.demo.tradeapp.model.Manufacturer" />
+        <mapping class="ru.demo.tradeapp.model.Product" />
+        <mapping class="ru.demo.tradeapp.model.Supplier" />
+        <mapping class="ru.demo.tradeapp.model.Unittype" />
     </session-factory>
 </hibernate-configuration>

@@ -6,7 +6,6 @@
 
 
 .button {
-
   -fx-border-style: solid; /* Green */
   -fx-border-color: -fx-additional-bg-color;
   -fx-background-color: #FFF;
