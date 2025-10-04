@@ -66,6 +66,20 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
+    void BtnUsersAction(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("user-table-view.fxml"));
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
     void BtnCategoriesAction(ActionEvent event) {
         FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("category-table-view.fxml"));
 
@@ -109,20 +123,6 @@ public class MainWindowController implements Initializable {
 
     @FXML
     void BtnUnittypesAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("unittype-table-view.fxml"));
-
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    void BtnUserAction(ActionEvent event) {
         FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("unittype-table-view.fxml"));
 
         Scene scene = null;

@@ -31,11 +31,9 @@ public class UnittypeEditViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (Manager.currentUnittype != null) {
-            // Редактирование существующей единицы измерения
             LabelId.setText(Manager.currentUnittype.getUnittypeId().toString());
             TextFieldTitle.setText(Manager.currentUnittype.getTitle());
         } else {
-            // Создание новой единицы измерения
             Manager.currentUnittype = new Unittype();
             LabelId.setText("Новая");
         }
@@ -60,11 +58,9 @@ public class UnittypeEditViewController implements Initializable {
         try {
             if (Manager.currentUnittype.getUnittypeId() != null && 
                 Manager.currentUnittype.getUnittypeId() > 0) {
-                // Обновление существующей единицы измерения
                 unittypeService.update(Manager.currentUnittype);
                 showAlert("Успех", "Единица измерения успешно обновлена", Alert.AlertType.INFORMATION);
             } else {
-                // Создание новой единицы измерения
                 unittypeService.save(Manager.currentUnittype);
                 showAlert("Успех", "Единица измерения успешно создана", Alert.AlertType.INFORMATION);
             }

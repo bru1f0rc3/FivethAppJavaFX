@@ -23,5 +23,6 @@
         <mapping class="ru.demo.tradeapp.model.Unittype" />
         <mapping class="ru.demo.tradeapp.model.Order" />
         <mapping class="ru.demo.tradeapp.model.OrderProduct" />
+        <mapping class="ru.demo.tradeapp.model.Role" />
     </session-factory>
 </hibernate-configuration>

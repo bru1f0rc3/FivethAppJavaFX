@@ -9,23 +9,19 @@ import ru.demo.tradeapp.util.HibernateSessionFactoryUtil;
 public class Role {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "title")
     private String title;
 
-    private String loadTitleRoleName(){
-        String title = "";
-        try(Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()){
-            Query query = session.createQuery("from Role where roleId = :roleId");
-            query.setParameter("roleId", getId());
-            Role role = (Role) query.getSingleResult();
-            title = role.getTitle();
-        }
-        catch (Exception e){
-            System.out.println("Исключение " + e);
-        }
-        return title;
+    public Role(){
+
+    }
+
+    public Role(Long id, String title) {
+        this.id = id;
+        this.title = title;
     }
 
     public Long getId() {
@@ -37,9 +33,6 @@ public class Role {
     }
 
     public String getTitle() {
-        if (this.title == null) {
-            this.title = loadTitleRoleName();
-        }
         return this.title;
     }
 

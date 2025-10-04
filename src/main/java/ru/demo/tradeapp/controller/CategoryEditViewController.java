@@ -31,11 +31,9 @@ public class CategoryEditViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (Manager.currentCategory != null) {
-            // Редактирование существующей категории
             LabelId.setText(Manager.currentCategory.getCategoryId().toString());
             TextFieldTitle.setText(Manager.currentCategory.getTitle());
         } else {
-            // Создание новой категории
             Manager.currentCategory = new Category();
             LabelId.setText("Новая");
         }
@@ -60,11 +58,9 @@ public class CategoryEditViewController implements Initializable {
         try {
             if (Manager.currentCategory.getCategoryId() != null && 
                 Manager.currentCategory.getCategoryId() > 0) {
-                // Обновление существующей категории
                 categoryService.update(Manager.currentCategory);
                 showAlert("Успех", "Категория успешно обновлена", Alert.AlertType.INFORMATION);
             } else {
-                // Создание новой категории
                 categoryService.save(Manager.currentCategory);
                 showAlert("Успех", "Категория успешно создана", Alert.AlertType.INFORMATION);
             }

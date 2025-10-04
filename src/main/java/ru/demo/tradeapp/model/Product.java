@@ -37,7 +37,7 @@ public class Product {
     private Integer quantityInStock;
 
     @OneToMany
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "order_id")
     private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "unittype_id", nullable = false)

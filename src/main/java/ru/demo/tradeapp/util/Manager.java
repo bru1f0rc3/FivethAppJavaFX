@@ -18,6 +18,7 @@ public class Manager {
     public static Supplier currentSupplier;
     public static Manufacturer currentManufacturer;
     public static Unittype currentUnittype;
+    public static User currentUserEdit;
 
     public static void ShowPopup() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

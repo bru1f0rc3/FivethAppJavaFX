@@ -1,6 +1,5 @@
 package ru.demo.tradeapp.controller;
 
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,8 +12,8 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
-import ru.demo.tradeapp.model.Supplier;
-import ru.demo.tradeapp.service.SupplierService;
+import ru.demo.tradeapp.model.User;
+import ru.demo.tradeapp.service.UserService;
 import ru.demo.tradeapp.util.Manager;
 
 import java.io.IOException;
@@ -23,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class SupplierTableViewController implements Initializable {
+public class UserTableViewController implements Initializable {
 
-    private SupplierService supplierService = new SupplierService();
+    private UserService userService = new UserService();
     
     @FXML
     private Button BtnBack;
@@ -40,13 +39,22 @@ public class SupplierTableViewController implements Initializable {
     private Button BtnUpdate;
 
     @FXML
-    private TableColumn<Supplier, Long> TableColumnId;
+    private TableColumn<User, String> TableColumnUsername;
 
     @FXML
-    private TableColumn<Supplier, String> TableColumnTitle;
+    private TableColumn<User, String> TableColumnFirstName;
 
     @FXML
-    private TableView<Supplier> TableViewSuppliers;
+    private TableColumn<User, String> TableColumnSecondName;
+
+    @FXML
+    private TableColumn<User, String> TableColumnMiddleName;
+
+    @FXML
+    private TableColumn<User, String> TableColumnRole;
+
+    @FXML
+    private TableView<User> TableViewUsers;
 
     @FXML
     private Label LabelUser;
@@ -66,48 +74,48 @@ public class SupplierTableViewController implements Initializable {
 
     @FXML
     void BtnAddAction(ActionEvent event) {
-        Manager.currentSupplier = null;
-        ShowEditSupplierWindow();
+        Manager.currentUserEdit = null;
+        ShowEditUserWindow();
         updateTable();
     }
 
     @FXML
     void BtnDeleteAction(ActionEvent event) {
-        Supplier supplier = TableViewSuppliers.getSelectionModel().getSelectedItem();
-        if (supplier == null) {
-            showAlert("Ошибка", "Выберите поставщика для удаления", Alert.AlertType.WARNING);
+        User user = TableViewUsers.getSelectionModel().getSelectedItem();
+        if (user == null) {
+            showAlert("Ошибка", "Выберите пользователя для удаления", Alert.AlertType.WARNING);
             return;
         }
 
         Optional<ButtonType> result = showConfirmDialog("Подтверждение удаления", 
-            "Вы действительно хотите удалить поставщика " + supplier.getTitle() + "?");
+            "Вы действительно хотите удалить пользователя " + user.getUsername() + "?");
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                supplierService.delete(supplier);
+                userService.delete(user);
                 updateTable();
-                showAlert("Успех", "Поставщик успешно удален", Alert.AlertType.INFORMATION);
+                showAlert("Успех", "Пользователь успешно удален", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
-                showAlert("Ошибка", "Не удалось удалить поставщика: " + e.getMessage(), Alert.AlertType.ERROR);
+                showAlert("Ошибка", "Не удалось удалить пользователя: " + e.getMessage(), Alert.AlertType.ERROR);
             }
         }
     }
 
     @FXML
     void BtnUpdateAction(ActionEvent event) {
-        Supplier supplier = TableViewSuppliers.getSelectionModel().getSelectedItem();
-        if (supplier == null) {
-            showAlert("Ошибка", "Выберите поставщика для редактирования", Alert.AlertType.WARNING);
+        User user = TableViewUsers.getSelectionModel().getSelectedItem();
+        if (user == null) {
+            showAlert("Ошибка", "Выберите пользователя для редактирования", Alert.AlertType.WARNING);
             return;
         }
         
-        Manager.currentSupplier = supplier;
-        ShowEditSupplierWindow();
+        Manager.currentUserEdit = user;
+        ShowEditUserWindow();
         updateTable();
     }
 
-    void ShowEditSupplierWindow() {
+    void ShowEditUserWindow() {
         Stage newWindow = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("supplier-edit-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("user-edit-view.fxml"));
 
         Scene scene = null;
         try {
@@ -116,12 +124,12 @@ public class SupplierTableViewController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        newWindow.setTitle("Редактировать поставщика");
+        newWindow.setTitle("Редактировать пользователя");
         newWindow.initOwner(Manager.secondStage);
         newWindow.initModality(Modality.WINDOW_MODAL);
         newWindow.setScene(scene);
         newWindow.setMinWidth(400);
-        newWindow.setMinHeight(300);
+        newWindow.setMinHeight(500);
         Manager.currentStage = newWindow;
         newWindow.showAndWait();
         Manager.currentStage = null;
@@ -137,19 +145,22 @@ public class SupplierTableViewController implements Initializable {
         setCellValueFactories();
         updateTable();
 
-        Manager.secondStage.setMinWidth(600);
-        Manager.secondStage.setMinHeight(400);
+        Manager.secondStage.setMinWidth(800);
+        Manager.secondStage.setMinHeight(600);
     }
 
     void updateTable() {
-        List<Supplier> suppliers = supplierService.findAll();
-        ObservableList<Supplier> observableSuppliers = FXCollections.observableArrayList(suppliers);
-        TableViewSuppliers.setItems(observableSuppliers);
+        List<User> users = userService.findAll();
+        ObservableList<User> observableUsers = FXCollections.observableArrayList(users);
+        TableViewUsers.setItems(observableUsers);
     }
 
     private void setCellValueFactories() {
-        TableColumnId.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getSupplierId()).asObject());
-        TableColumnTitle.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        TableColumnUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
+        TableColumnFirstName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
+        TableColumnSecondName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSecondName()));
+        TableColumnMiddleName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMiddleName()));
+        TableColumnRole.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoleId().getTitle()));
     }
 
     private void showAlert(String title, String content, Alert.AlertType type) {

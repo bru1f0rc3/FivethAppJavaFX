@@ -31,11 +31,9 @@ public class SupplierEditViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (Manager.currentSupplier != null) {
-            // Редактирование существующего поставщика
             LabelId.setText(Manager.currentSupplier.getSupplierId().toString());
             TextFieldTitle.setText(Manager.currentSupplier.getTitle());
         } else {
-            // Создание нового поставщика
             Manager.currentSupplier = new Supplier();
             LabelId.setText("Новый");
         }
@@ -60,11 +58,9 @@ public class SupplierEditViewController implements Initializable {
         try {
             if (Manager.currentSupplier.getSupplierId() != null && 
                 Manager.currentSupplier.getSupplierId() > 0) {
-                // Обновление существующего поставщика
                 supplierService.update(Manager.currentSupplier);
                 showAlert("Успех", "Поставщик успешно обновлен", Alert.AlertType.INFORMATION);
             } else {
-                // Создание нового поставщика
                 supplierService.save(Manager.currentSupplier);
                 showAlert("Успех", "Поставщик успешно создан", Alert.AlertType.INFORMATION);
             }

@@ -136,8 +136,7 @@ public class ManufacturerTableViewController implements Initializable {
         LabelUser.setText(Manager.currentUser.getFirstName());
         setCellValueFactories();
         updateTable();
-        
-        // Установка минимального размера главного окна
+
         Manager.secondStage.setMinWidth(600);
         Manager.secondStage.setMinHeight(400);
     }

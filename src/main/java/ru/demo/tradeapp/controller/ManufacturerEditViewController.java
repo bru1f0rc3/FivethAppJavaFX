@@ -31,11 +31,9 @@ public class ManufacturerEditViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (Manager.currentManufacturer != null) {
-            // Редактирование существующего производителя
             LabelId.setText(Manager.currentManufacturer.getManufacturerId().toString());
             TextFieldTitle.setText(Manager.currentManufacturer.getTitle());
         } else {
-            // Создание нового производителя
             Manager.currentManufacturer = new Manufacturer();
             LabelId.setText("Новый");
         }

@@ -4,10 +4,7 @@ package ru.demo.tradeapp.model;
 
 // Importing required classes
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user", schema = "public")
@@ -28,8 +25,9 @@ User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role_id")
-    private Long roleId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role  role;
 
     public String getUsername() {
         return username;
@@ -71,12 +69,12 @@ User {
         this.password = password;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public Role getRoleId() {
+        return role;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public Role setRoleId(Role role) {
+        return this.role = role;
     }
 
 
