@@ -22,7 +22,6 @@ public class Manufacturer {
     public Manufacturer(Long manufacturerId, String title) {
         this.manufacturerId = manufacturerId;
         this.title = title;
-
     }
 
     public Long getManufacturerId() {
@@ -46,4 +45,3 @@ public class Manufacturer {
         return title;
     }
 }
-

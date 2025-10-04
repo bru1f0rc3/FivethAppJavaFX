@@ -1,4 +1,4 @@
-module ru.demo.tradeapp {
+module ru.trade.tradeapp {
     requires javafx.controls;
     requires javafx.fxml;
     requires jakarta.persistence;
@@ -6,9 +6,12 @@ module ru.demo.tradeapp {
     requires java.naming;
     requires java.desktop;
     requires javafx.swing;
+    requires org.hibernate.validator;
+    requires org.postgresql.jdbc;
     opens ru.demo.tradeapp to javafx.fxml;
-    opens ru.demo.tradeapp.model to org.hibernate.orm.core;
+    opens ru.demo.tradeapp.model to org.hibernate.orm.core, javafx.base;
     exports ru.demo.tradeapp;
     exports ru.demo.tradeapp.controller;
     opens ru.demo.tradeapp.controller to javafx.fxml;
+    opens ru.demo.tradeapp.util to org.hibernate.orm.core;
 }

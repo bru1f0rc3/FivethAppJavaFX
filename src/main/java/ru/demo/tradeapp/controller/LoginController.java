@@ -32,9 +32,11 @@ public class LoginController implements Initializable {
     String captchaCode;
     int secondsLeft;
     @FXML
-    private Button BtnCancel;
-    @FXML
     RowConstraints ThirdRow;
+    @FXML
+    Button BtnRenewCaptcha;
+    @FXML
+    private Button BtnCancel;
     @FXML
     private Button BtnOk;
     @FXML
@@ -45,8 +47,6 @@ public class LoginController implements Initializable {
     private TextField TextFieldCaptcha;
     @FXML
     private ImageView ImageViewCaptcha;
-    @FXML Button BtnRenewCaptcha;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -57,6 +57,7 @@ public class LoginController implements Initializable {
     void BtnRenewCaptchaAction(ActionEvent event) {
         generateCaptcha();
     }
+
     @FXML
     void BtnCancelAction(ActionEvent event) {
         Manager.ShowPopup();
@@ -106,7 +107,7 @@ public class LoginController implements Initializable {
 
     public void generateCaptcha() {
         try {
-            ImageViewCaptcha.setImage(MakeCaptcha.CreateImage(150,40, 4));
+            ImageViewCaptcha.setImage(MakeCaptcha.CreateImage(150, 40, 4));
             captchaCode = MakeCaptcha.captchaCode();
             System.out.println(captchaCode);
         } catch (IOException e) {
@@ -121,18 +122,20 @@ public class LoginController implements Initializable {
         Manager.mainStage.hide();
         Stage newWindow = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("main-view.fxml"));
+
         Scene scene = null;
         try {
             scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Manager.currentRole.setId(Manager.currentUser.getRoleId());
-        newWindow.setTitle("Вы вошли как " + Manager.currentRole.getTitle());
+        newWindow.setTitle("Вы вошли как " + Manager.currentUser.getFirstName());
         newWindow.setScene(scene);
         newWindow.setOnCloseRequest(e -> {
             Manager.mainStage.show();
         });
+        Manager.secondStage = newWindow;
 
         newWindow.show();
     }
@@ -157,18 +160,17 @@ public class LoginController implements Initializable {
         timer.schedule(task, delay);
     }
 
-    public void blockButtons()
-    {
+    public void blockButtons() {
         initTimer();
         secondsLeft = 10;
         BtnOk.setDisable(true);
         BtnCancel.setDisable(true);
     }
-    public void initController()
-    {
-        this.isWrongCaptha = false;
-        this.isShowCaptha = false;
+
+    public void initController() {
         ThirdRow.setPrefHeight(0);
+        TextFieldUsername.setText("maia");
+        PasswordField.setText("1");
         TextFieldCaptcha.setVisible(false);
         BtnRenewCaptcha.setVisible(false);
         ImageViewCaptcha.setVisible(false);
@@ -177,6 +179,4 @@ public class LoginController implements Initializable {
         captchaCode = "";
         secondsLeft = 0;
     }
-
-
 }

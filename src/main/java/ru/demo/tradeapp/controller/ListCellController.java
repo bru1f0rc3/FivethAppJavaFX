@@ -39,14 +39,10 @@ public class ListCellController {
         if (product.getDiscountAmount() >= 15) {
             String oldPrice = product.getCost().toString();
             LabelPriceProduct.setStyle("-fx-background-color: #7fff00;");
-
             Text text = new Text(oldPrice);
             text.setStrikethrough(true);
-            text.setFill(Color.BLACK);
-
             Group group = new Group(text);
             LabelPriceProduct.setGraphic(group);
-
             double discountValue = product.getCost() * (product.getDiscountAmount() / 100.0);
             double newPrice = product.getCost() - discountValue;
             LabelPriceProduct.setText(String.format("%.2f",newPrice));

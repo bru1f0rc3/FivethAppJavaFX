@@ -1,9 +1,8 @@
 package ru.demo.tradeapp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.Session;
+import ru.demo.tradeapp.util.HibernateSessionFactoryUtil;
 
 @Entity
 @Table(name = "role", schema = "public")
@@ -15,6 +14,20 @@ public class Role {
     @Column(name = "title")
     private String title;
 
+    private String loadTitleRoleName(){
+        String title = "";
+        try(Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()){
+            Query query = session.createQuery("from Role where roleId = :roleId");
+            query.setParameter("roleId", getId());
+            Role role = (Role) query.getSingleResult();
+            title = role.getTitle();
+        }
+        catch (Exception e){
+            System.out.println("Исключение " + e);
+        }
+        return title;
+    }
+
     public Long getId() {
         return id;
     }
@@ -24,13 +37,10 @@ public class Role {
     }
 
     public String getTitle() {
-        if (getId() == 1)
-            title = "Клиент";
-        if (getId() == 2)
-            title = "Администратор";
-        if (getId() == 3)
-            title = "Менеджер";
-        return title;
+        if (this.title == null) {
+            this.title = loadTitleRoleName();
+        }
+        return this.title;
     }
 
     public void setTitle(String title) {
