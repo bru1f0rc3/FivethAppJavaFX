@@ -3,39 +3,48 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.demo.tradeapp.controller.MainWindowController">
-    <children>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <center>
-                <BorderPane fx:id="BorderPaneMainFrame" BorderPane.alignment="CENTER">
-                    <top>
-                        <FlowPane minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="200.0" rowValignment="TOP" BorderPane.alignment="CENTER">
-                            <children>
-                                <TextField fx:id="TextFieldSearch" onAction="#TextFieldSearchAction" onInputMethodTextChanged="#TextFieldTextChanged" prefHeight="25.0" prefWidth="262.0" promptText="Введите название для поиска" />
-                                <ComboBox fx:id="ComboBoxProductType" onAction="#ComboBoxProductTypeAction" prefWidth="150.0" promptText="тип продукта" />
-                                <ComboBox fx:id="ComboBoxDiscount" onAction="#ComboBoxDiscountAction" prefHeight="26.0" prefWidth="143.0" promptText="скидка" />
-                                <ComboBox fx:id="ComboBoxSort" onAction="#ComboBoxSortAction" prefWidth="150.0" promptText="сортировка" />
-                            </children>
-                        </FlowPane>
-                    </top>
-                    <center>
-                        <ListView fx:id="ListViewProducts" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="201.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-                    </center>
-                </BorderPane>
-            </center>
-            <top>
-                <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER_RIGHT">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.demo.tradeapp.controller.MainWindowController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <BorderPane fx:id="BorderPaneMainFrame" BorderPane.alignment="CENTER">
+               <top>
+                  <FlowPane minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="200.0" rowValignment="TOP" BorderPane.alignment="CENTER">
+                     <children>
+                        <TextField fx:id="TextFieldSearch" onAction="#TextFieldSearchAction" onInputMethodTextChanged="#TextFieldTextChanged" prefHeight="25.0" prefWidth="262.0" promptText="Введите название для поиска" />
+                        <ComboBox fx:id="ComboBoxProductType" onAction="#ComboBoxProductTypeAction" prefWidth="150.0" promptText="тип продукта" />
+                        <ComboBox fx:id="ComboBoxDiscount" onAction="#ComboBoxDiscountAction" prefHeight="26.0" prefWidth="143.0" promptText="скидка" />
+                        <ComboBox fx:id="ComboBoxSort" onAction="#ComboBoxSortAction" prefWidth="150.0" promptText="сортировка" />
+                     </children>
+                  </FlowPane>
+               </top>
+               <center>
+                  <ListView fx:id="ListViewProducts" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="201.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+         </center>
+         <top>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER_RIGHT">
+              <items>
+                  <Separator halignment="LEFT" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="320.0" />
+                  <Label fx:id="LabelUser" prefWidth="120.0" text="Label" />
+                  <MenuButton mnemonicParsing="false" styleClass="button" text="Управление">
                     <items>
-                        <Separator halignment="LEFT" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="320.0" />
-                        <Label fx:id="LabelUser" prefWidth="120.0" text="Label" />
-                        <Button fx:id="BtnProducts" mnemonicParsing="false" onAction="#BtnProductsAction" text="Товары" />
-                        <Button fx:id="BtnBack" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#BtnBackAction" text="Заказы" textAlignment="RIGHT" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnProductsAction" text="Товары" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnBackAction" text="Заказы" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnCategoriesAction" text="Категории" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnSuppliersAction" text="Поставщики" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnManufacturersAction" text="Производители" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnUnittypesAction" text="Единицы измерения" />
+                      <MenuItem mnemonicParsing="false" onAction="#BtnUserAction" text="Пользователи" />
                     </items>
-                </ToolBar>
-            </top>
-            <bottom>
-                <Label fx:id="LabelInfo" text="Label" BorderPane.alignment="CENTER_LEFT" />
-            </bottom>
-        </BorderPane>
-    </children>
+                  </MenuButton>
+              </items>
+            </ToolBar>
+         </top>
+         <bottom>
+            <Label fx:id="LabelInfo" text="Label" BorderPane.alignment="CENTER_LEFT" />
+         </bottom>
+      </BorderPane>
+   </children>
 </AnchorPane>

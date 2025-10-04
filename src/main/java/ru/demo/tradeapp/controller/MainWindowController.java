@@ -37,6 +37,14 @@ public class MainWindowController implements Initializable {
     @FXML
     private Button BtnProducts;
     @FXML
+    private Button BtnCategories;
+    @FXML
+    private Button BtnSuppliers;
+    @FXML
+    private Button BtnManufacturers;
+    @FXML
+    private Button BtnUnittypes;
+    @FXML
     private ComboBox<Category> ComboBoxProductType;
     @FXML
     private ComboBox<String> ComboBoxSort;
@@ -55,6 +63,76 @@ public class MainWindowController implements Initializable {
     @FXML
     void BtnBackAction(ActionEvent event) {
 
+    }
+
+    @FXML
+    void BtnCategoriesAction(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("category-table-view.fxml"));
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void BtnSuppliersAction(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("supplier-table-view.fxml"));
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void BtnManufacturersAction(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("manufacturer-table-view.fxml"));
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void BtnUnittypesAction(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("unittype-table-view.fxml"));
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void BtnUserAction(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("unittype-table-view.fxml"));
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML

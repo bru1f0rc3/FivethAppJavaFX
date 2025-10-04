@@ -62,13 +62,13 @@ public class ProductTableViewController implements Initializable {
 
     @FXML
     private TableColumn<Product, String> TableColumnProductId;
-    
+
     @FXML
     private TableColumn<Product, String> ColumnGetPrice;
-    
+
     @FXML
     private TableColumn<Product, String> ColumnGetCreateProduct;
-    
+
     @FXML
     private TableColumn<Product, String> ColumnGetCategory;
 
@@ -177,8 +177,6 @@ public class ProductTableViewController implements Initializable {
         newWindow.initOwner(Manager.secondStage);
         newWindow.initModality(Modality.WINDOW_MODAL);
         newWindow.setScene(scene);
-        newWindow.setMinWidth(800); // Установка минимальной ширины окна
-        newWindow.setMinHeight(600); // Установка минимальной высоты окна
         Manager.currentStage = newWindow;
         newWindow.showAndWait();
         Manager.currentStage = null;
@@ -207,10 +205,6 @@ public class ProductTableViewController implements Initializable {
         ComboBoxSort.setItems(orders);
         setCellValueFactories();
         filterData();
-        
-        // Установка минимального размера главного окна
-        Manager.secondStage.setMinWidth(1000);
-        Manager.secondStage.setMinHeight(600);
     }
 
     void filterData() {
@@ -268,10 +262,11 @@ public class ProductTableViewController implements Initializable {
         TableColumnProductId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductId()));
         TableColumnTitle.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
         TableColumnCountInStock.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantityInStock()).asObject());
-        TableColumnCost.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(String.format("%.2f", cellData.getValue().getCost()) + " руб.")));
+        TableColumnCost.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(String.format("%.2f", cellData.getValue().getPriceWithDiscount()) + " руб.")));
         TableColumnDiscount.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getDiscountAmount()).asObject());
+        TableColumnCountInStock.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantityInStock()).asObject());
 
-        ColumnGetPrice.setCellValueFactory(cellData -> new SimpleStringProperty(String.format("%.2f руб.", cellData.getValue().getCost())));
+        ColumnGetPrice.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(String.format("%.2f", cellData.getValue().getCost()) + " руб.")));
         ColumnGetCreateProduct.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getManufacturer().getTitle()));
         ColumnGetCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().getTitle()));
     }

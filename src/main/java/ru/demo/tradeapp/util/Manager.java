@@ -4,8 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import ru.demo.tradeapp.model.Product;
-import ru.demo.tradeapp.model.User;
+import ru.demo.tradeapp.model.*;
 
 import java.util.Optional;
 
@@ -15,6 +14,10 @@ public class Manager {
     public static Stage secondStage;
     public static Stage currentStage;
     public static Product currentProduct;
+    public static Category currentCategory;
+    public static Supplier currentSupplier;
+    public static Manufacturer currentManufacturer;
+    public static Unittype currentUnittype;
 
     public static void ShowPopup() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
