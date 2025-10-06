@@ -47,7 +47,7 @@ public class MainWindowController implements Initializable {
     private ProductService productService = new ProductService();
     @FXML
     private ListView<Product> ListViewProducts;
-    @FXML
+@FXML
     private ComboBox<Category> ComboBoxCategory;
     @FXML
     private ComboBox<String> ComboBoxSort;
@@ -91,7 +91,7 @@ public class MainWindowController implements Initializable {
         filterData();
     }
 
-    @FXML
+@FXML
     void TextFieldSearchAction(ActionEvent event) {
         filterData();
     }
@@ -102,7 +102,7 @@ public class MainWindowController implements Initializable {
         Stage newWindow = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("order-view.fxml"));
         Scene scene = null;
-        try {
+try {
             scene = new Scene(fxmlLoader.load(), screenSize.getWidth(), screenSize.getHeight());
             scene.getStylesheets().add("base-styles.css");
 
@@ -122,7 +122,7 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        LabelUser.setText("Вы вошли как " + currentUser.getSecondName() + " " + Manager.currentUser.getFirstName());
+        LabelUser.setText("Вывошли как " + currentUser.getSecondName() + " " + Manager.currentUser.getFirstName());
         List<Category> categoryList = categoryService.findAll();
         categoryList.add(0, new Category(0L, "Все"));
         ObservableList<Category> categories = FXCollections.observableArrayList(categoryList);
@@ -136,29 +136,29 @@ public class MainWindowController implements Initializable {
 
     public void loadProducts(Category category) {
         ListViewProducts.getItems().clear();
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findAllWithDetails();
         itemsCount = products.size();
         LabelInfo.setText("Всего записей " + itemsCount + " из " + itemsCount);
         if (category != null) {
             products = products.stream().filter(product -> product.getCategory().getCategoryId().equals(category.getCategoryId())).collect(Collectors.toList());
-            int filteredItemsCount = products.size();
+           int filteredItemsCount = products.size();
             LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
         }
         for (Product product : products) {
             ListViewProducts.getItems().add(product);
         }
         ListViewProducts.setCellFactory(lv -> new ProductCell());
-    }
+}
 
     void filterData() {
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findAllWithDetails();
         itemsCount = products.size();
         if (!ComboBoxCategory.getSelectionModel().isEmpty()) {
             Category category = ComboBoxCategory.getValue();
             if (category.getCategoryId() != 0) {
                 products = products.stream().filter(product -> product.getCategory().getCategoryId().equals(category.getCategoryId())).collect(Collectors.toList());
-            }
-        }
+           }
+}
         if (!ComboBoxDiscount.getSelectionModel().isEmpty()) {
             String discount = ComboBoxDiscount.getValue();
             if (discount.equals("0-9.99%")) {
@@ -189,8 +189,8 @@ public class MainWindowController implements Initializable {
         for (Product product : products) {
             ListViewProducts.getItems().add(product);
         }
-        ListViewProducts.setCellFactory(lv -> new ProductCell());
-        int filteredItemsCount = products.size();
+        ListViewProducts.setCellFactory(lv ->new ProductCell());
+       int filteredItemsCount = products.size();
         LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
     }
     

@@ -15,6 +15,10 @@ public class ProductService {
         return productDao.findAll();
     }
 
+    public List<Product> findAllWithDetails() {
+        return productDao.findAllWithDetails();
+    }
+
     public Product findOne(final long id) {
         return productDao.findOne(id);
     }
@@ -43,4 +47,3 @@ public class ProductService {
         productDao.deleteById(id);
     }
 }
-

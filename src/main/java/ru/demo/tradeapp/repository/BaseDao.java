@@ -48,12 +48,17 @@ public abstract class BaseDao<T>  {
     }
 
     public T findOne(final long id) {
-        return getCurrentSession().get(clazz, id);
+        Session session = getCurrentSession();
+        T item = session.get(clazz, id);
+        session.close();
+        return item;
     }
 
 
     public List<T> findAll() {
-        List<T> items = (List<T>) HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("from " + clazz.getName()).list();
+        Session session = getCurrentSession();
+        List<T> items = (List<T>) session.createQuery("from " + clazz.getName()).list();
+        session.close();
         return items;
     }
 }
