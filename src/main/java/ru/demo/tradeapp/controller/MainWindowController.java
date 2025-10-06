@@ -37,6 +37,9 @@ public class MainWindowController implements Initializable {
 
     @FXML
     Button BtnBasket;
+    
+    @FXML
+    Button BtnManageEntities;
 
 
     private int itemsCount;
@@ -111,6 +114,11 @@ public class MainWindowController implements Initializable {
         newWindow.setScene(scene);
         newWindow.showAndWait();
     }
+    
+    @FXML
+    void BtnManageEntitiesAction(ActionEvent event) {
+        showManageEntitiesMenu(event);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -184,5 +192,30 @@ public class MainWindowController implements Initializable {
         ListViewProducts.setCellFactory(lv -> new ProductCell());
         int filteredItemsCount = products.size();
         LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
+    }
+    
+    private void showManageEntitiesMenu(ActionEvent event) {
+        Button source = (Button) event.getSource();
+        
+        ContextMenu contextMenu = new ContextMenu();
+        
+        MenuItem pickupPointsItem = new MenuItem("Пункты выдачи");
+        pickupPointsItem.setOnAction(e -> {
+            Manager.LoadSecondStageScene("pickuppoint-table-view.fxml");
+        });
+        
+        MenuItem rolesItem = new MenuItem("Роли");
+        rolesItem.setOnAction(e -> {
+            Manager.LoadSecondStageScene("role-table-view.fxml");
+        });
+        
+        MenuItem statusesItem = new MenuItem("Статусы");
+        statusesItem.setOnAction(e -> {
+            Manager.LoadSecondStageScene("status-table-view.fxml");
+        });
+        
+        contextMenu.getItems().addAll(pickupPointsItem, rolesItem, statusesItem);
+        contextMenu.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(), 
+                         source.localToScreen(source.getBoundsInLocal()).getMaxY());
     }
 }

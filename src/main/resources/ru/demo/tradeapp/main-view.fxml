@@ -16,6 +16,7 @@
                                 <ComboBox fx:id="ComboBoxCategory" onAction="#ComboBoxCategoryAction" promptText="тип продукта" />
                                 <ComboBox fx:id="ComboBoxDiscount" onAction="#ComboBoxDiscountAction" promptText="скидка" />
                                 <ComboBox fx:id="ComboBoxSort" onAction="#ComboBoxSortAction" promptText="сортировка" />
+                                <Button fx:id="BtnManageEntities" mnemonicParsing="false" onAction="#BtnManageEntitiesAction" styleClass="button" text="Управление" />
                             </children>
                         </FlowPane>
                     </top>
@@ -60,4 +61,3 @@
         </BorderPane>
     </children>
 </AnchorPane>
-
