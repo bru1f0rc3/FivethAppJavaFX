@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Set URL -->
-        <property name = "hibernate.connection.url">jdbc:postgresql://localhost:5432/trade</property>
+        <property name = "hibernate.connection.url">jdbc:postgresql://localhost:5432/demo10</property>
         <!-- Set User Name -->
         <property name = "hibernate.connection.username">postgres</property>
         <!-- Set Password -->
@@ -15,14 +15,16 @@
         <property name = "hibernate.show_sql">true</property>
         <!-- Optional: Auto-generate schema -->
         <property name = "hibernate.hbm2ddl.auto">update</property>
-        <mapping class="ru.demo.tradeapp.model.User" />
-        <mapping class="ru.demo.tradeapp.model.Category" />
-        <mapping class="ru.demo.tradeapp.model.Manufacturer" />
-        <mapping class="ru.demo.tradeapp.model.Product" />
-        <mapping class="ru.demo.tradeapp.model.Supplier" />
-        <mapping class="ru.demo.tradeapp.model.Unittype" />
-        <mapping class="ru.demo.tradeapp.model.Order" />
-        <mapping class="ru.demo.tradeapp.model.OrderProduct" />
-        <mapping class="ru.demo.tradeapp.model.Role" />
+        <mapping class="ru.demo.tradeapp.model.Category"/>
+        <mapping class="ru.demo.tradeapp.model.Manufacturer"/>
+        <mapping class="ru.demo.tradeapp.model.OrderProduct"/>
+        <mapping class="ru.demo.tradeapp.model.Order"/>
+        <mapping class="ru.demo.tradeapp.model.PickupPoint"/>
+        <mapping class="ru.demo.tradeapp.model.Product"/>
+        <mapping class="ru.demo.tradeapp.model.Role"/>
+        <mapping class="ru.demo.tradeapp.model.Status"/>
+        <mapping class="ru.demo.tradeapp.model.Supplier"/>
+        <mapping class="ru.demo.tradeapp.model.Unittype"/>
+        <mapping class="ru.demo.tradeapp.model.User"/>
     </session-factory>
 </hibernate-configuration>

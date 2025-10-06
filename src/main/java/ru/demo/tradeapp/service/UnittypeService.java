@@ -1,4 +1,3 @@
-
 package ru.demo.tradeapp.service;
 
 import ru.demo.tradeapp.model.Unittype;

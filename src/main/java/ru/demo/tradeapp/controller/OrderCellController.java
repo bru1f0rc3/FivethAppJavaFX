@@ -6,54 +6,63 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import ru.demo.tradeapp.model.Product;
-import ru.demo.tradeapp.util.Manager;
+import ru.demo.tradeapp.util.Item;
 
 import java.io.IOException;
+import java.util.Map;
 
-import static ru.demo.tradeapp.util.Manager.ShowErrorMessageBox;
+public class OrderCellController {
 
-public class ListCellController {
+    @FXML
+    private AnchorPane CellAnchorPane;
 
     @FXML
     private ImageView ImageViewPhoto;
 
     @FXML
+    private Label LabelBasePrice;
+
+    @FXML
+    private Label LabelCountInBasket;
+
+    @FXML
+    private Label LabelCountInStock;
+
+    @FXML
     private Label LabelDescription;
+
+    @FXML
+    private Label LabelInfo;
 
     @FXML
     private Label LabelManufacturer;
 
     @FXML
-    private Label LabelBasePrice;
+    private Label LabelPercent;
 
     @FXML
     private Label LabelPriceWithDiscount;
 
     @FXML
-    private Label LabelPercent;
-
-    @FXML
     private Label LabelTitle;
-    @FXML
-    private AnchorPane CellAnchorPane;
 
-    Product currentProduct;
     @FXML
     void AddProductInBasket(ActionEvent event) {
 
-        ShowErrorMessageBox("Товар добавлен" + currentProduct.getTitle());
-        Manager.mainBasket.addProductInBasket(currentProduct);
-
-
     }
 
-    public void setProduct(Product product) throws IOException {
-        currentProduct = product;
+    public void setItem(Item item) throws IOException {
+        Product product = item.getProduct();
         ImageViewPhoto.setImage(product.getPhoto());
         LabelPercent.setText(product.getDiscountAmount().toString() + "%");
         LabelDescription.setText(product.getDescription());
         LabelTitle.setText(product.getTitle());
         LabelManufacturer.setText("Производитель: " + product.getManufacturer().getTitle());
+
+        LabelCountInBasket.setText("Количество: " + item.getCount());
+        LabelCountInStock.setText("В наличии на складе: " + product.getQuantityInStock());
+
+        LabelInfo.setText("Итого: " + item.getTotal() + "руб.");
         if (product.getDiscountAmount() >= 15) {
             CellAnchorPane.setStyle("-fx-background-color: #7fff00;");
         } else {
@@ -71,5 +80,7 @@ public class ListCellController {
         }
 
     }
+
+
 
 }

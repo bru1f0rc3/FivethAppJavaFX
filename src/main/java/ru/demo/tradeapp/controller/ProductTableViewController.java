@@ -46,7 +46,29 @@ public class ProductTableViewController implements Initializable {
     @FXML
     private ComboBox<String> ComboBoxSort;
     @FXML
-    private Button BtnBack;
+    private MenuItem MenuItemAdd;
+
+    @FXML
+    private MenuItem MenuItemBack;
+
+    @FXML
+    private MenuItem MenuItemCategories;
+
+    @FXML
+    private MenuItem MenuItemDelete;
+
+    @FXML
+    private MenuItem MenuItemManufacturers;
+
+    @FXML
+    private MenuItem MenuItemSuppliers;
+
+    @FXML
+    private MenuItem MenuItemUnittypes;
+
+    @FXML
+    private MenuItem MenuItemUpdate;
+
 
     @FXML
     private TableColumn<Product, ImageView> TableColumnPhoto;
@@ -63,23 +85,6 @@ public class ProductTableViewController implements Initializable {
     @FXML
     private TableColumn<Product, String> TableColumnProductId;
 
-    @FXML
-    private TableColumn<Product, String> ColumnGetPrice;
-
-    @FXML
-    private TableColumn<Product, String> ColumnGetCreateProduct;
-
-    @FXML
-    private TableColumn<Product, String> ColumnGetCategory;
-
-    @FXML
-    private Button BtnAdd;
-
-    @FXML
-    private Button BtnDelete;
-
-    @FXML
-    private Button BtnUpdate;
 
     @FXML
     private TableColumn<Product, String> TableColumnTitle;
@@ -114,53 +119,6 @@ public class ProductTableViewController implements Initializable {
         filterData();
     }
 
-    @FXML
-    void BtnBackAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("main-view.fxml"));
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-            //Manager.mainStage.show();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    void BtnAddAction(ActionEvent event) {
-        Product product = TableViewProducts.getSelectionModel().getSelectedItem();
-        Manager.currentProduct = null;
-        ShowEditProductWindow();
-        filterData();
-    }
-
-    @FXML
-    void BtnDeleteAction(ActionEvent event) {
-        Product product = TableViewProducts.getSelectionModel().getSelectedItem();
-        if (!product.getOrderProducts().isEmpty())
-        {
-            ShowErrorMessageBox("Ошибка целостности данных, у данного товара есть зависимые заказы");
-            return;
-        }
-
-        Optional<ButtonType> result = ShowConfirmPopup();
-        if (result.get() == ButtonType.OK) {
-            productService.delete(product);
-            filterData();
-        }
-
-    }
-
-    @FXML
-    void BtnUpdateAction(ActionEvent event) {
-        Product product = TableViewProducts.getSelectionModel().getSelectedItem();
-        Manager.currentProduct = product;
-        ShowEditProductWindow();
-        filterData();
-    }
 
     void ShowEditProductWindow() {
         Stage newWindow = new Stage();
@@ -194,7 +152,7 @@ public class ProductTableViewController implements Initializable {
     }
 
     public void initController() {
-        LabelUser.setText(Manager.currentUser.getFirstName());
+        LabelUser.setText("Вы вошли как " + currentUser.getSecondName()+ " "+ Manager.currentUser.getFirstName());
         List<Category> categoryList = categoryService.findAll();
         categoryList.add(0, new Category(0L, "Все"));
         ObservableList<Category> categories = FXCollections.observableArrayList(categoryList);
@@ -246,6 +204,7 @@ public class ProductTableViewController implements Initializable {
         for (Product product : products) {
             TableViewProducts.getItems().add(product);
         }
+
         int filteredItemsCount = products.size();
         LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
     }
@@ -260,14 +219,65 @@ public class ProductTableViewController implements Initializable {
             }
         });
         TableColumnProductId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductId()));
-        TableColumnTitle.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        TableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().getPropertyTitle());
         TableColumnCountInStock.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantityInStock()).asObject());
-        TableColumnCost.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(String.format("%.2f", cellData.getValue().getPriceWithDiscount()) + " руб.")));
+        TableColumnCost.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(String.format("%.2f", cellData.getValue().getCost()) + " руб.")));
         TableColumnDiscount.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getDiscountAmount()).asObject());
-        TableColumnCountInStock.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantityInStock()).asObject());
+    }
 
-        ColumnGetPrice.setCellValueFactory(cellData -> new SimpleStringProperty(String.format(String.format("%.2f", cellData.getValue().getCost()) + " руб.")));
-        ColumnGetCreateProduct.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getManufacturer().getTitle()));
-        ColumnGetCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().getTitle()));
+    @FXML
+    void MenuItemAddAction(ActionEvent event) {
+        Manager.currentProduct = null;
+        ShowEditProductWindow();
+        filterData();
+    }
+
+    @FXML
+    void MenuItemBackAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("main-view.fxml");
+    }
+
+    @FXML
+    void MenuItemCategoriesAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("category-table-view.fxml");
+    }
+
+    @FXML
+    void MenuItemDeleteAction(ActionEvent event) {
+        Product product = TableViewProducts.getSelectionModel().getSelectedItem();
+        if (!product.getOrderProducts().isEmpty()) {
+            ShowErrorMessageBox("Ошибка целостности данных, у данного товара есть зависимые заказы");
+            return;
+        }
+
+        Optional<ButtonType> result = ShowConfirmPopup();
+        if (result.get() == ButtonType.OK) {
+            productService.delete(product);
+            filterData();
+        }
+    }
+
+    @FXML
+    void MenuItemManufacturersAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("manufacturers-table-view.fxml");
+    }
+
+    @FXML
+    void MenuItemSuppliersAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("suppliers-table-view.fxml");
+    }
+
+    @FXML
+    void MenuItemUnittypesAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("unittypes-table-view.fxml");
+    }
+
+    @FXML
+    void MenuItemUpdateAction(ActionEvent event) {
+        Product product = TableViewProducts.getSelectionModel().getSelectedItem();
+        Manager.currentProduct = product;
+        ShowEditProductWindow();
+        filterData();
     }
 }
+

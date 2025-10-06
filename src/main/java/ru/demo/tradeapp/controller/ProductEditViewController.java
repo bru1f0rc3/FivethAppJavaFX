@@ -116,6 +116,7 @@ public class ProductEditViewController implements Initializable {
     @FXML
     void BtnCancelAction(ActionEvent event) {
         Stage stage = (Stage) BtnCancel.getScene().getWindow();
+        // do what you have to do
         stage.close();
     }
 

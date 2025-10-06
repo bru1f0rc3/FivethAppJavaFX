@@ -1,50 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.demo.tradeapp.controller.MainWindowController">
-   <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <center>
-            <BorderPane fx:id="BorderPaneMainFrame" BorderPane.alignment="CENTER">
-               <top>
-                  <FlowPane minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="200.0" rowValignment="TOP" BorderPane.alignment="CENTER">
-                     <children>
-                        <TextField fx:id="TextFieldSearch" onAction="#TextFieldSearchAction" onInputMethodTextChanged="#TextFieldTextChanged" prefHeight="25.0" prefWidth="262.0" promptText="Введите название для поиска" />
-                        <ComboBox fx:id="ComboBoxProductType" onAction="#ComboBoxProductTypeAction" prefWidth="150.0" promptText="тип продукта" />
-                        <ComboBox fx:id="ComboBoxDiscount" onAction="#ComboBoxDiscountAction" prefHeight="26.0" prefWidth="143.0" promptText="скидка" />
-                        <ComboBox fx:id="ComboBoxSort" onAction="#ComboBoxSortAction" prefWidth="150.0" promptText="сортировка" />
-                     </children>
-                  </FlowPane>
-               </top>
-               <center>
-                  <ListView fx:id="ListViewProducts" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="201.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-               </center>
-            </BorderPane>
-         </center>
-         <top>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER_RIGHT">
-              <items>
-                  <Separator halignment="LEFT" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="320.0" />
-                  <Label fx:id="LabelUser" prefWidth="120.0" text="Label" />
-                  <MenuButton mnemonicParsing="false" styleClass="button" text="Управление">
-                    <items>
-                      <MenuItem mnemonicParsing="false" onAction="#BtnProductsAction" text="Товары" />
-                      <MenuItem mnemonicParsing="false" onAction="#BtnBackAction" text="Заказы" />
-                      <MenuItem mnemonicParsing="false" onAction="#BtnUsersAction" text="Пользователи" />
-                      <MenuItem mnemonicParsing="false" onAction="#BtnCategoriesAction" text="Категории" />
-                      <MenuItem mnemonicParsing="false" onAction="#BtnSuppliersAction" text="Поставщики" />
-                      <MenuItem mnemonicParsing="false" onAction="#BtnManufacturersAction" text="Производители" />
-                      <MenuItem mnemonicParsing="false" onAction="#BtnUnittypesAction" text="Единицы измерения" />
-                    </items>
-                  </MenuButton>
-              </items>
-            </ToolBar>
-         </top>
-         <bottom>
-            <Label fx:id="LabelInfo" text="Label" BorderPane.alignment="CENTER_LEFT" />
-         </bottom>
-      </BorderPane>
-   </children>
+    <children>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <center>
+                <BorderPane fx:id="BorderPaneMainFrame" BorderPane.alignment="CENTER">
+                    <top>
+                        <FlowPane minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" rowValignment="TOP" BorderPane.alignment="CENTER">
+                            <children>
+                                <TextField fx:id="TextFieldSearch" onAction="#TextFieldSearchAction" prefHeight="25.0" prefWidth="262.0" promptText="Введите название для поиска" />
+                                <ComboBox fx:id="ComboBoxCategory" onAction="#ComboBoxCategoryAction" promptText="тип продукта" />
+                                <ComboBox fx:id="ComboBoxDiscount" onAction="#ComboBoxDiscountAction" promptText="скидка" />
+                                <ComboBox fx:id="ComboBoxSort" onAction="#ComboBoxSortAction" promptText="сортировка" />
+                            </children>
+                        </FlowPane>
+                    </top>
+                    <center>
+                        <ListView fx:id="ListViewProducts" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="201.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+                    </center>
+                    <bottom>
+                        <FlowPane BorderPane.alignment="CENTER">
+                            <children>
+                                <Button fx:id="BtnBasket" mnemonicParsing="false" onAction="#BtnBasketAction" text="Корзина" />
+                                <Label fx:id="LabelBasketInfo" prefHeight="17.0" prefWidth="182.0" text="Label" />
+                            </children>
+                        </FlowPane>
+                    </bottom>
+                </BorderPane>
+            </center>
+            <bottom>
+                <Label fx:id="LabelInfo" text="Label" BorderPane.alignment="CENTER_LEFT" />
+            </bottom>
+            <top>
+                <HBox BorderPane.alignment="CENTER">
+                    <children>
+                        <MenuBar maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="381.0" HBox.hgrow="ALWAYS">
+                            <menus>
+                                <Menu mnemonicParsing="false" text="Файл">
+                                    <items>
+                                        <MenuItem fx:id="MenuItemProducts" mnemonicParsing="false" onAction="#MenuItemProductsAction" text="Товары" />
+                                        <MenuItem fx:id="MenuItemOrders" mnemonicParsing="false" onAction="#MenuItemOrdersAction" text="Заказы" />
+                                    </items>
+                                </Menu>
+
+
+                            </menus>
+                        </MenuBar>
+                        <Label fx:id="LabelUser" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="user-label" text="Label" HBox.hgrow="ALWAYS">
+                            <padding>
+                                <Insets right="20.0" />
+                            </padding></Label>
+                    </children>
+                </HBox>
+            </top>
+        </BorderPane>
+    </children>
 </AnchorPane>
+

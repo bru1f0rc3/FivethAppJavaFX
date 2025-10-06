@@ -1,6 +1,10 @@
 package ru.demo.tradeapp.model;
 
+
+
 import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "supplier", schema = "public")
@@ -43,6 +47,19 @@ public class Supplier {
     @Override
     public String toString() {
         return title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Supplier supplier)) return false;
+        return Objects.equals(supplierId, supplier.supplierId) && Objects.equals(title, supplier.title);
+    }
+
+    @Override
+    public int hashCode() {
+        final int hashCode = 17 * supplierId.hashCode() + 31 * title.hashCode();
+        return hashCode;
     }
 }
 

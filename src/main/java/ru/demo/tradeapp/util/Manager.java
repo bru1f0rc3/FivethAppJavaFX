@@ -1,14 +1,21 @@
 package ru.demo.tradeapp.util;
 
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import ru.demo.tradeapp.TradeApp;
 import ru.demo.tradeapp.model.*;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class Manager {
+    public static Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
     public static User currentUser = null;
     public static Stage mainStage;
     public static Stage secondStage;
@@ -19,6 +26,8 @@ public class Manager {
     public static Manufacturer currentManufacturer;
     public static Unittype currentUnittype;
     public static User currentUserEdit;
+
+    public static Basket mainBasket = new Basket();
 
     public static void ShowPopup() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -55,5 +64,25 @@ public class Manager {
         alert.setContentText("Также будут удалены все зависимые от этой записи данные");
         Optional<ButtonType> result = alert.showAndWait();
         return result;
+    }
+
+    public static void LoadSecondStageScene(String fxmlFileName)
+    {
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource(fxmlFileName));
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load(), screenSize.getWidth(), screenSize.getHeight());
+            scene.getStylesheets().add("base-styles.css");
+            Manager.secondStage.setScene(scene);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static void LoadOrderScene(String fxmlFileName)
+    {
+
     }
 }

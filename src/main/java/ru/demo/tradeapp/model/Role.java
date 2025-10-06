@@ -1,42 +1,68 @@
 package ru.demo.tradeapp.model;
 
 import jakarta.persistence.*;
-import org.hibernate.Session;
-import ru.demo.tradeapp.util.HibernateSessionFactoryUtil;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "role", schema = "public")
 public class Role {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "title")
+    private Long roleId;
+    @Column(name = "title", nullable = false, length = 200)
     private String title;
+    @OneToMany
+    @JoinColumn(name = "role_id")
+    private Set<User> users = new HashSet<User>();
 
-    public Role(){
-
+    public Role() {
     }
 
-    public Role(Long id, String title) {
-        this.id = id;
+    public Role(Long categoryId, String title) {
+        this.roleId = categoryId;
         this.title = title;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role role)) return false;
+        return Objects.equals(roleId, role.roleId) && Objects.equals(title, role.title);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        final int hashCode = 17 * roleId.hashCode() + 31 * title.hashCode();
+        return hashCode;
+    }
+
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long categoryId) {
+        this.roleId = categoryId;
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

@@ -59,7 +59,7 @@ public class UserEditViewController implements Initializable {
             TextFieldSecondName.setText(Manager.currentUserEdit.getSecondName());
             TextFieldMiddleName.setText(Manager.currentUserEdit.getMiddleName());
             PasswordFieldPassword.setText(Manager.currentUserEdit.getPassword());
-            ComboBoxRole.setValue(Manager.currentUserEdit.getRoleId());
+            ComboBoxRole.setValue(Manager.currentUserEdit.getRole());
             
             // Блокируем изменение имени пользователя при редактировании
             TextFieldUsername.setEditable(false);
@@ -89,7 +89,7 @@ public class UserEditViewController implements Initializable {
         Manager.currentUserEdit.setSecondName(TextFieldSecondName.getText());
         Manager.currentUserEdit.setMiddleName(TextFieldMiddleName.getText());
         Manager.currentUserEdit.setPassword(PasswordFieldPassword.getText());
-        Manager.currentUserEdit.setRoleId(ComboBoxRole.getValue());
+        Manager.currentUserEdit.setRole(ComboBoxRole.getValue());
         
         try {
             if (Manager.currentUserEdit.getUsername() != null && 

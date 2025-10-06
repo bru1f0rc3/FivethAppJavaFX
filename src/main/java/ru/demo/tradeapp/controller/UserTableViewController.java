@@ -160,7 +160,7 @@ public class UserTableViewController implements Initializable {
         TableColumnFirstName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
         TableColumnSecondName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSecondName()));
         TableColumnMiddleName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMiddleName()));
-        TableColumnRole.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoleId().getTitle()));
+        TableColumnRole.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole().getTitle()));
     }
 
     private void showAlert(String title, String content, Alert.AlertType type) {

@@ -2,6 +2,8 @@ package ru.demo.tradeapp.model;
 
 
 import jakarta.persistence.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -35,30 +38,45 @@ public class Product {
     private Integer discountAmount;
     @Column(name = "quantity_in_stock", nullable = false)
     private Integer quantityInStock;
+    @OneToMany(mappedBy = "product")
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
     private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unittype_id", nullable = false)
     private Unittype unittype;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer_id", nullable = false)
     private Manufacturer manufacturer;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @Column(name = "photo")
     private byte[] photo;
+    public Product() {
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(productId, product.productId) && Objects.equals(title, product.title) && Objects.equals(description, product.description) && Objects.equals(cost, product.cost) && Objects.equals(maxDiscountAmount, product.maxDiscountAmount) && Objects.equals(discountAmount, product.discountAmount) && Objects.equals(quantityInStock, product.quantityInStock) && Objects.equals(unittype, product.unittype) && Objects.equals(manufacturer, product.manufacturer) && Objects.equals(supplier, product.supplier) && Objects.equals(category, product.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productId, title, description, cost, maxDiscountAmount, discountAmount, quantityInStock, unittype, manufacturer, supplier, category);
+    }
+
+    public StringProperty getPropertyTitle() {
+        return new SimpleStringProperty(this.title);
+    }
 
     public Set<OrderProduct> getOrderProducts() {
         return orderProducts;
     }
-
 
     public String getProductId() {
         return productId;
@@ -179,4 +197,3 @@ public class Product {
         return cost * (1 - discountAmount / 100.0);
     }
 }
-

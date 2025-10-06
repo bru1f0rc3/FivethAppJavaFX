@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.*;
 
 import static ru.demo.tradeapp.util.Manager.ShowErrorMessageBox;
+import static ru.demo.tradeapp.util.Manager.screenSize;
 
 public class LoginController implements Initializable {
 
@@ -121,16 +122,18 @@ public class LoginController implements Initializable {
         System.out.println(Manager.currentUser);
         Manager.mainStage.hide();
         Stage newWindow = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("main-view.fxml"));
 
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("main-view.fxml"));
+        // FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("category-table-view.fxml"));
         Scene scene = null;
         try {
-            scene = new Scene(fxmlLoader.load());
+            scene = new Scene(fxmlLoader.load(), screenSize.getWidth(), screenSize.getHeight());
             scene.getStylesheets().add("base-styles.css");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         newWindow.setTitle("Вы вошли как " + Manager.currentUser.getFirstName());
+        newWindow.setMaximized(true);
         newWindow.setScene(scene);
         newWindow.setOnCloseRequest(e -> {
             Manager.mainStage.show();
@@ -179,4 +182,6 @@ public class LoginController implements Initializable {
         captchaCode = "";
         secondsLeft = 0;
     }
+
+
 }

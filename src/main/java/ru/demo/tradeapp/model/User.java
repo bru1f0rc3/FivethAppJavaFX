@@ -1,3 +1,4 @@
+
 package ru.demo.tradeapp.model;
 
 // Java Program to Illustrate Creation of Simple POJO Class
@@ -6,11 +7,12 @@ package ru.demo.tradeapp.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "user", schema = "public")
 // POJO class
-public class
-User {
+public class User {
     @Id
     @Column(name = "username")
     private String username;
@@ -24,10 +26,9 @@ User {
 
     @Column(name = "password")
     private String password;
-
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
-    private Role  role;
+    private Role role;
 
     public String getUsername() {
         return username;
@@ -69,14 +70,26 @@ User {
         this.password = password;
     }
 
-    public Role getRoleId() {
+    public Role getRole() {
         return role;
     }
 
-    public Role setRoleId(Role role) {
-        return this.role = role;
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && Objects.equals(middleName, user.middleName) && Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        final int hashCode = 17 * username.hashCode() + 31 * firstName.hashCode() + 17 * secondName.hashCode() + 31 * middleName.hashCode() + 17 * password.hashCode();
+        return hashCode;
     }
 
 
 }
-

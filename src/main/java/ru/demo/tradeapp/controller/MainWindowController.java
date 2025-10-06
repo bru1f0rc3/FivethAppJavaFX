@@ -9,6 +9,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
 import ru.demo.tradeapp.model.Category;
 import ru.demo.tradeapp.model.Product;
@@ -23,117 +25,37 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static ru.demo.tradeapp.util.Manager.currentUser;
+import static ru.demo.tradeapp.util.Manager.screenSize;
+
 public class MainWindowController implements Initializable {
 
     @FXML
     ComboBox<String> ComboBoxDiscount;
+    @FXML
+    Label LabelBasketInfo;
+
+    @FXML
+    Button BtnBasket;
+
+
     private int itemsCount;
     private CategoryService categoryService = new CategoryService();
     private ProductService productService = new ProductService();
     @FXML
-    private Button BtnBack;
-    @FXML
     private ListView<Product> ListViewProducts;
     @FXML
-    private Button BtnProducts;
-    @FXML
-    private Button BtnCategories;
-    @FXML
-    private Button BtnSuppliers;
-    @FXML
-    private Button BtnManufacturers;
-    @FXML
-    private Button BtnUnittypes;
-    @FXML
-    private ComboBox<Category> ComboBoxProductType;
+    private ComboBox<Category> ComboBoxCategory;
     @FXML
     private ComboBox<String> ComboBoxSort;
     @FXML
     private Label LabelInfo;
-
     @FXML
     private Label LabelUser;
-
     @FXML
     private TextField TextFieldSearch;
-
     @FXML
     private BorderPane BorderPaneMainFrame;
-
-    @FXML
-    void BtnBackAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void BtnUsersAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("user-table-view.fxml"));
-
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    void BtnCategoriesAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("category-table-view.fxml"));
-
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    void BtnSuppliersAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("supplier-table-view.fxml"));
-
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    void BtnManufacturersAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("manufacturer-table-view.fxml"));
-
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    void BtnUnittypesAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("unittype-table-view.fxml"));
-
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @FXML
     void TextFieldTextChanged(ActionEvent event) {
@@ -141,7 +63,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    void ComboBoxProductTypeAction(ActionEvent event) {
+    void ComboBoxCategoryAction(ActionEvent event) {
         filterData();
     }
 
@@ -150,21 +72,15 @@ public class MainWindowController implements Initializable {
         filterData();
     }
 
+
     @FXML
-    void BtnProductsAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("products-table-view.fxml"));
+    void MenuItemProductsAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("products-table-view.fxml");
+    }
 
-        Scene scene = null;
-        try {
-            scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("base-styles.css");
-            Manager.secondStage.setScene(scene);
-
-            //Manager.mainStage.show();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @FXML
+    void MenuItemOrdersAction(ActionEvent event) {
+        Manager.LoadSecondStageScene("products-table-view.fxml");
     }
 
     @FXML
@@ -177,14 +93,32 @@ public class MainWindowController implements Initializable {
         filterData();
     }
 
+    @FXML
+    void BtnBasketAction(ActionEvent event)
+    {
+        Stage newWindow = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("order-view.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load(), screenSize.getWidth(), screenSize.getHeight());
+            scene.getStylesheets().add("base-styles.css");
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        newWindow.initOwner(Manager.mainStage);
+        newWindow.initModality(Modality.WINDOW_MODAL);
+        newWindow.setScene(scene);
+        newWindow.showAndWait();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        LabelUser.setText(Manager.currentUser.getFirstName());
+        LabelUser.setText("Вы вошли как " + currentUser.getSecondName() + " " + Manager.currentUser.getFirstName());
         List<Category> categoryList = categoryService.findAll();
         categoryList.add(0, new Category(0L, "Все"));
         ObservableList<Category> categories = FXCollections.observableArrayList(categoryList);
-        ComboBoxProductType.setItems(categories);
+        ComboBoxCategory.setItems(categories);
         ObservableList<String> discounts = FXCollections.observableArrayList("Все товары", "0-9.99%", "10-14.99%", "15% и более");
         ComboBoxDiscount.setItems(discounts);
         ObservableList<String> orders = FXCollections.observableArrayList("по возрастанию цены", "по убыванию цены");
@@ -211,8 +145,8 @@ public class MainWindowController implements Initializable {
     void filterData() {
         List<Product> products = productService.findAll();
         itemsCount = products.size();
-        if (!ComboBoxProductType.getSelectionModel().isEmpty()) {
-            Category category = ComboBoxProductType.getValue();
+        if (!ComboBoxCategory.getSelectionModel().isEmpty()) {
+            Category category = ComboBoxCategory.getValue();
             if (category.getCategoryId() != 0) {
                 products = products.stream().filter(product -> product.getCategory().getCategoryId().equals(category.getCategoryId())).collect(Collectors.toList());
             }
