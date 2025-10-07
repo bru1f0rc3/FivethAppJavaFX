@@ -30,3 +30,4 @@ public class OrderProductId implements Serializable {
 
     // equals() and hashCode()
 }
+

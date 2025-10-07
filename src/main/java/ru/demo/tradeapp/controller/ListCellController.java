@@ -2,6 +2,7 @@ package ru.demo.tradeapp.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -10,40 +11,38 @@ import ru.demo.tradeapp.util.Manager;
 
 import java.io.IOException;
 
-import static ru.demo.tradeapp.util.Manager.ShowErrorMessageBox;
+import static ru.demo.tradeapp.util.Manager.*;
 
 public class ListCellController {
 
+    Product currentProduct;
     @FXML
     private ImageView ImageViewPhoto;
-
     @FXML
     private Label LabelDescription;
-
     @FXML
     private Label LabelManufacturer;
-
     @FXML
     private Label LabelBasePrice;
-
     @FXML
     private Label LabelPriceWithDiscount;
-
     @FXML
     private Label LabelPercent;
-
     @FXML
     private Label LabelTitle;
     @FXML
     private AnchorPane CellAnchorPane;
 
-    Product currentProduct;
     @FXML
     void AddProductInBasket(ActionEvent event) {
 
-        ShowErrorMessageBox("Товар добавлен" + currentProduct.getTitle());
+        MessageBox("Информация", "Добавлен новый товар в корзину", currentProduct.getTitle(), Alert.AlertType.INFORMATION );
         Manager.mainBasket.addProductInBasket(currentProduct);
-
+        if (mainBasket.getCount() > 0) {
+            mainWindowController.BtnBasket.setVisible(true);
+            mainWindowController.LabelBasketInfo.setVisible(true);
+            mainWindowController.LabelBasketInfo.setText("В корзине " + mainBasket.getCount() + " товаров");
+        }
 
     }
 

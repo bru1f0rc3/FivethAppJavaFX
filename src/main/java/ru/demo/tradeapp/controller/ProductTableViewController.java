@@ -17,8 +17,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
 import ru.demo.tradeapp.model.Category;
+import ru.demo.tradeapp.model.OrderProduct;
 import ru.demo.tradeapp.model.Product;
 import ru.demo.tradeapp.service.CategoryService;
+import ru.demo.tradeapp.service.OrderProductService;
 import ru.demo.tradeapp.service.ProductService;
 import ru.demo.tradeapp.util.Manager;
 
@@ -35,6 +37,7 @@ import static ru.demo.tradeapp.util.Manager.*;
 public class ProductTableViewController implements Initializable {
 
     private int itemsCount;
+    private OrderProductService orderProductService = new OrderProductService();
     private CategoryService categoryService = new CategoryService();
     private ProductService productService = new ProductService();
     @FXML
@@ -43,7 +46,8 @@ public class ProductTableViewController implements Initializable {
     @FXML
     private ComboBox<Category> ComboBoxProductType;
 
-    @FXML private ComboBox<String> ComboBoxSort;
+    @FXML
+    private ComboBox<String> ComboBoxSort;
     @FXML
     private MenuItem MenuItemAdd;
 
@@ -60,7 +64,7 @@ public class ProductTableViewController implements Initializable {
     private MenuItem MenuItemManufacturers;
 
     @FXML
-   private MenuItem MenuItemSuppliers;
+    private MenuItem MenuItemSuppliers;
 
     @FXML
     private MenuItem MenuItemUnittypes;
@@ -108,7 +112,7 @@ public class ProductTableViewController implements Initializable {
         filterData();
     }
 
-@FXML
+    @FXML
     void ComboBoxSortAction(ActionEvent event) {
         filterData();
     }
@@ -130,7 +134,7 @@ public class ProductTableViewController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        newWindow.setTitle("Изменитьданные");
+        newWindow.setTitle("Изменить данные");
         newWindow.initOwner(Manager.secondStage);
         newWindow.initModality(Modality.WINDOW_MODAL);
         newWindow.setScene(scene);
@@ -165,7 +169,7 @@ public class ProductTableViewController implements Initializable {
     }
 
     void filterData() {
-        List<Product> products = productService.findAllWithDetails();
+        List<Product> products = productService.findAll();
         itemsCount = products.size();
         if (!ComboBoxProductType.getSelectionModel().isEmpty()) {
             Category category = ComboBoxProductType.getValue();
@@ -178,11 +182,11 @@ public class ProductTableViewController implements Initializable {
             if (discount.equals("0-9.99%")) {
                 products = products.stream().filter(product -> product.getDiscountAmount() < 10).collect(Collectors.toList());
             }
-            if(discount.equals("10-14.99%")) {
+            if (discount.equals("10-14.99%")) {
                 products = products.stream().filter(product -> product.getDiscountAmount() >= 10 && product.getDiscountAmount() < 15).collect(Collectors.toList());
             }
             if (discount.equals("15% и более")) {
-                products= products.stream().filter(product -> product.getDiscountAmount() >= 15).collect(Collectors.toList());
+                products = products.stream().filter(product -> product.getDiscountAmount() >= 15).collect(Collectors.toList());
             }
         }
         if (!ComboBoxSort.getSelectionModel().isEmpty()) {
@@ -196,7 +200,7 @@ public class ProductTableViewController implements Initializable {
         }
 
         String searchText = TextFieldSearch.getText();
-if (!searchText.isEmpty()) {
+        if (!searchText.isEmpty()) {
             products = products.stream().filter(product -> product.getTitle().toLowerCase().contains(searchText.toLowerCase())).collect(Collectors.toList());
         }
         TableViewProducts.getItems().clear();
@@ -204,7 +208,7 @@ if (!searchText.isEmpty()) {
             TableViewProducts.getItems().add(product);
         }
 
-        int filteredItemsCount =products.size();
+        int filteredItemsCount = products.size();
         LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
     }
 
@@ -213,7 +217,7 @@ if (!searchText.isEmpty()) {
         TableColumnPhoto.setCellValueFactory(cellData -> {
             try {
                 return new SimpleObjectProperty<ImageView>(cellData.getValue().getImage());
-           } catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -236,14 +240,16 @@ if (!searchText.isEmpty()) {
         Manager.LoadSecondStageScene("main-view.fxml");
     }
 
-    @FXML void MenuItemCategoriesAction(ActionEvent event) {
+    @FXML
+    void MenuItemCategoriesAction(ActionEvent event) {
         Manager.LoadSecondStageScene("category-table-view.fxml");
     }
 
     @FXML
     void MenuItemDeleteAction(ActionEvent event) {
         Product product = TableViewProducts.getSelectionModel().getSelectedItem();
-        if (!product.getOrderProducts().isEmpty()) {
+
+        if (orderProductService.getCount(product.getProductId()) > 0) {
             ShowErrorMessageBox("Ошибка целостности данных, у данного товара есть зависимые заказы");
             return;
         }
@@ -278,4 +284,3 @@ if (!searchText.isEmpty()) {
         filterData();
     }
 }
-

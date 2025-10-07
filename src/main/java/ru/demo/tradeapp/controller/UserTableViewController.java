@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class UserTableViewController implements Initializable {
 
     private UserService userService = new UserService();
-    
+
     @FXML
     private Button BtnBack;
 
@@ -87,8 +87,8 @@ public class UserTableViewController implements Initializable {
             return;
         }
 
-        Optional<ButtonType> result = showConfirmDialog("Подтверждение удаления", 
-            "Вы действительно хотите удалить пользователя " + user.getUsername() + "?");
+        Optional<ButtonType> result = showConfirmDialog("Подтверждение удаления",
+                "Вы действительно хотите удалить пользователя " + user.getUsername() + "?");
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 userService.delete(user);
@@ -107,7 +107,7 @@ public class UserTableViewController implements Initializable {
             showAlert("Ошибка", "Выберите пользователя для редактирования", Alert.AlertType.WARNING);
             return;
         }
-        
+
         Manager.currentUserEdit = user;
         ShowEditUserWindow();
         updateTable();

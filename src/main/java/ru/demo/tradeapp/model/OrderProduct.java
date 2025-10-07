@@ -7,16 +7,16 @@ import java.util.Objects;
 
 @Entity
 @IdClass(OrderProductId.class)
-@Table(name = "order_products", schema = "public")
+@Table(name = "order_product", schema = "public")
 public class OrderProduct {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -30,6 +30,10 @@ public class OrderProduct {
     }
 
     public OrderProduct(Product product, Long count) {
+        this.product = product;
+        this.count = count;
+    }
+    public OrderProduct() {
         this.product = product;
         this.count = count;
     }
@@ -59,7 +63,9 @@ public class OrderProduct {
 
     @Override
     public int hashCode() {
-        return 17 * order.getOrderId().hashCode() + 31 * product.getProductId().hashCode() + 17 * count.hashCode();
+        return 17 * order.getOrderId().hashCode() +
+                31 * product.getProductId().hashCode() +
+                17 * count.hashCode();
     }
 
     public Long getCount() {

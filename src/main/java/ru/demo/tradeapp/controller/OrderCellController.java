@@ -62,7 +62,7 @@ public class OrderCellController {
         LabelCountInBasket.setText("Количество: " + item.getCount());
         LabelCountInStock.setText("В наличии на складе: " + product.getQuantityInStock());
 
-        LabelInfo.setText("Итого: " + item.getTotal() + "руб.");
+        LabelInfo.setText("Итого: " + String.format("%.2f", item.getTotal()) + " руб.");
         if (product.getDiscountAmount() >= 15) {
             CellAnchorPane.setStyle("-fx-background-color: #7fff00;");
         } else {

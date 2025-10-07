@@ -14,9 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "product", schema = "public")
@@ -38,19 +36,19 @@ public class Product {
     private Integer discountAmount;
     @Column(name = "quantity_in_stock", nullable = false)
     private Integer quantityInStock;
-    @OneToMany(mappedBy = "product")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "product")
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "unittype_id", nullable = false)
     private Unittype unittype;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manufacturer_id", nullable = false)
     private Manufacturer manufacturer;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @Column(name = "photo")
@@ -62,19 +60,25 @@ public class Product {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product product)) return false;
-        return Objects.equals(productId, product.productId) && Objects.equals(title, product.title) && Objects.equals(description, product.description) && Objects.equals(cost, product.cost) && Objects.equals(maxDiscountAmount, product.maxDiscountAmount) && Objects.equals(discountAmount, product.discountAmount) && Objects.equals(quantityInStock, product.quantityInStock) && Objects.equals(unittype, product.unittype) && Objects.equals(manufacturer, product.manufacturer) && Objects.equals(supplier, product.supplier) && Objects.equals(category, product.category);
+        return Objects.equals(productId, product.productId)
+                && Objects.equals(title, product.title)
+                && Objects.equals(description, product.description)
+                && Objects.equals(cost, product.cost)
+                && Objects.equals(maxDiscountAmount, product.maxDiscountAmount) && Objects.equals(discountAmount, product.discountAmount) && Objects.equals(quantityInStock, product.quantityInStock) && Objects.equals(unittype, product.unittype) && Objects.equals(manufacturer, product.manufacturer) && Objects.equals(supplier, product.supplier) && Objects.equals(category, product.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, title, description, cost, maxDiscountAmount, discountAmount, quantityInStock, unittype, manufacturer, supplier, category);
+        return Objects.hash(productId,
+                title, description, cost,
+                maxDiscountAmount, discountAmount, quantityInStock, unittype, manufacturer, supplier, category);
     }
 
     public StringProperty getPropertyTitle() {
         return new SimpleStringProperty(this.title);
     }
 
-    public Set<OrderProduct> getOrderProducts() {
+    public List<OrderProduct> getOrderProducts() {
         return orderProducts;
     }
 
@@ -132,6 +136,8 @@ public class Product {
 
     public void setQuantityInStock(Integer quantityInStock) {
         this.quantityInStock = quantityInStock;
+        if (quantityInStock < 0)
+            this.quantityInStock = 0;
     }
 
     public Unittype getUnittype() {
@@ -197,3 +203,4 @@ public class Product {
         return cost * (1 - discountAmount / 100.0);
     }
 }
+

@@ -1,24 +1,30 @@
 package ru.demo.tradeapp.controller;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfEncodings;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPCell;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import ru.demo.tradeapp.model.*;
-import ru.demo.tradeapp.service.OrderProductService;
-import ru.demo.tradeapp.service.OrderService;
-import ru.demo.tradeapp.service.PickupPointService;
-import ru.demo.tradeapp.service.StatusService;
+import ru.demo.tradeapp.service.*;
 import ru.demo.tradeapp.util.Item;
 import ru.demo.tradeapp.util.Manager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static ru.demo.tradeapp.util.Manager.*;
 
@@ -28,6 +34,7 @@ public class OrderViewController implements Initializable {
     PickupPointService pickupPointService = new PickupPointService();
     StatusService statusService = new StatusService();
     OrderService orderService = new OrderService();
+    ProductService productService = new ProductService();
     OrderProductService orderProductService = new OrderProductService();
     Order newOrder;
     @FXML
@@ -36,6 +43,8 @@ public class OrderViewController implements Initializable {
     @FXML
     private Button BtnDelete;
 
+    @FXML
+    private Button BtnPrintToPDF;
     @FXML
     private Button BtnOk;
 
@@ -80,6 +89,11 @@ public class OrderViewController implements Initializable {
     }
 
     @FXML
+    void BtnPrintToPDFAction(ActionEvent event) throws IOException, DocumentException {
+        PrintOrderToPDF(newOrder);
+    }
+
+    @FXML
     void BtnOkAction(ActionEvent event) {
         String error = checkFields().toString();
         if (!error.isEmpty()) {
@@ -89,23 +103,12 @@ public class OrderViewController implements Initializable {
         newOrder.setUser(currentUser);
         newOrder.setStatus(ComboStatus.getValue());
         newOrder.setPickupPoint(ComboBoxPickupPoint.getValue());
-
-        Set<OrderProduct> orderProducts = new HashSet<>();
-        for (Item item : mainBasket.getBasket().values()) {
-            OrderProduct orderProduct = new OrderProduct(newOrder, item.getProduct(), Long.valueOf(item.getCount()));
-            orderProducts.add(orderProduct);
-        }
-
         orderService.save(newOrder);
-
-
-
-//       for (OrderProduct orderProduct :orderProducts) {
-//            orderProductService.save(orderProduct);}
-
-
         MessageBox("Информация", "", "Данные сохранены успешно", Alert.AlertType.INFORMATION);
-
+        BtnOk.setDisable(true);
+        BtnDelete.setDisable(true);
+        BtnPrintToPDF.setVisible(true);
+        BtnPrintToPDF.setDisable(false);
     }
 
     @FXML
@@ -124,6 +127,8 @@ public class OrderViewController implements Initializable {
         DatePickerOrderCreateDate.setValue(newOrder.getCreateDate());
         DatePickerOrderDeliveryDate.setValue(newOrder.getDeliveryDate());
         LabelOrderGetCode.setText("Код выдачи: " + newOrder.getGetCode());
+        BtnPrintToPDF.setVisible(false);
+        BtnPrintToPDF.setDisable(true);
         loadProducts();
     }
 
@@ -134,7 +139,8 @@ public class OrderViewController implements Initializable {
             ListViewProducts.getItems().add(entry.getValue());
         }
         ListViewProducts.setCellFactory(lv -> new OrderCell());
-        LabelBasketInfo.setText("Общая сумма заказа: " + Manager.mainBasket.getTotalCost() + ". Общий размер скидки: " + mainBasket.getTotalDiscount() + "%");
+        LabelBasketInfo.setText("Общая сумма заказа: " + String.format("%.2f", Manager.mainBasket.getTotalCost())
+                + ". Общий размер скидки: " + mainBasket.getTotalDiscount() + "%");
     }
 
     public Order CreateNewOrder() {
@@ -159,7 +165,9 @@ public class OrderViewController implements Initializable {
 
     StringBuilder checkFields() {
         StringBuilder error = new StringBuilder();
-
+        if (mainBasket.getCount() == 0) {
+            error.append("Корзина пуста\n");
+        }
         if (ComboStatus.getValue() == null) {
             error.append("Выберите статус\n");
         }
@@ -172,3 +180,4 @@ public class OrderViewController implements Initializable {
     }
 
 }
+

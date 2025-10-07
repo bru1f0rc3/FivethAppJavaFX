@@ -6,7 +6,7 @@ import ru.demo.tradeapp.util.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public abstract class BaseDao<T>  {
+public abstract class BaseDao<T> {
     private Class<T> clazz;
 
     public BaseDao(Class<T> clazz) {
@@ -14,14 +14,14 @@ public abstract class BaseDao<T>  {
     }
 
     protected Session getCurrentSession() {
-        return HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        return HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
     }
 
 
     public void save(final T entity) {
         Session session = getCurrentSession();
         Transaction tx1 = session.beginTransaction();
-        session.save(entity);
+        session.persist(entity);
         tx1.commit();
         session.close();
     }
@@ -29,7 +29,7 @@ public abstract class BaseDao<T>  {
     public void update(final T entity) {
         Session session = getCurrentSession();
         Transaction tx1 = session.beginTransaction();
-        session.update(entity);
+        session.merge(entity);
         tx1.commit();
         session.close();
     }
@@ -37,7 +37,7 @@ public abstract class BaseDao<T>  {
     public void delete(final T entity) {
         Session session = getCurrentSession();
         Transaction tx1 = session.beginTransaction();
-        session.delete(entity);
+        session.remove(entity);
         tx1.commit();
         session.close();
     }
@@ -49,6 +49,7 @@ public abstract class BaseDao<T>  {
 
     public T findOne(final long id) {
         Session session = getCurrentSession();
+        session.beginTransaction();
         T item = session.get(clazz, id);
         session.close();
         return item;
@@ -57,8 +58,10 @@ public abstract class BaseDao<T>  {
 
     public List<T> findAll() {
         Session session = getCurrentSession();
+        session.beginTransaction();
         List<T> items = (List<T>) session.createQuery("from " + clazz.getName()).list();
         session.close();
         return items;
     }
 }
+

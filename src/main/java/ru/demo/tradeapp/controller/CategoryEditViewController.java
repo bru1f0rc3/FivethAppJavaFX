@@ -13,18 +13,18 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CategoryEditViewController implements Initializable {
-    
+
     private CategoryService categoryService = new CategoryService();
-    
+
     @FXML
     private Button BtnCancel;
-    
+
     @FXML
     private Button BtnSave;
-    
+
     @FXML
     private TextField TextFieldTitle;
-    
+
     @FXML
     private Label LabelId;
 
@@ -52,12 +52,12 @@ public class CategoryEditViewController implements Initializable {
             showAlert("Ошибка", error, Alert.AlertType.ERROR);
             return;
         }
-        
+
         Manager.currentCategory.setTitle(TextFieldTitle.getText());
-        
+
         try {
-            if (Manager.currentCategory.getCategoryId() != null && 
-                Manager.currentCategory.getCategoryId() > 0) {
+            if (Manager.currentCategory.getCategoryId() != null &&
+                    Manager.currentCategory.getCategoryId() > 0) {
                 categoryService.update(Manager.currentCategory);
                 showAlert("Успех", "Категория успешно обновлена", Alert.AlertType.INFORMATION);
             } else {

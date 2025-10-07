@@ -25,11 +25,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static ru.demo.tradeapp.util.Manager.currentUser;
-import static ru.demo.tradeapp.util.Manager.screenSize;
+import static ru.demo.tradeapp.util.Manager.*;
 
 public class MainWindowController implements Initializable {
 
+    @FXML
+    Button BtnManageEntities;
     @FXML
     ComboBox<String> ComboBoxDiscount;
     @FXML
@@ -37,9 +38,6 @@ public class MainWindowController implements Initializable {
 
     @FXML
     Button BtnBasket;
-    
-    @FXML
-    Button BtnManageEntities;
 
 
     private int itemsCount;
@@ -47,7 +45,7 @@ public class MainWindowController implements Initializable {
     private ProductService productService = new ProductService();
     @FXML
     private ListView<Product> ListViewProducts;
-@FXML
+    @FXML
     private ComboBox<Category> ComboBoxCategory;
     @FXML
     private ComboBox<String> ComboBoxSort;
@@ -75,15 +73,45 @@ public class MainWindowController implements Initializable {
         filterData();
     }
 
+    @FXML
+    void BtnManageEntitiesAction(ActionEvent event) {
+        showManageEntitiesMenu(event);
+    }
+
+    private void showManageEntitiesMenu(ActionEvent event) {
+        Button source = (Button) event.getSource();
+
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem pickupPointsItem = new MenuItem("Пункты выдачи");
+        pickupPointsItem.setOnAction(e -> {
+            Manager.LoadSecondStageScene("pickuppoint-table-view.fxml");
+        });
+
+        MenuItem rolesItem = new MenuItem("Пользователи");
+        rolesItem.setOnAction(e -> {
+            Manager.LoadSecondStageScene("user-table-view.fxml");
+        });
+
+        MenuItem statusesItem = new MenuItem("Категории товаров");
+        statusesItem.setOnAction(e -> {
+            Manager.LoadSecondStageScene("category-table-view.fxml");
+        });
+
+        contextMenu.getItems().addAll(pickupPointsItem, rolesItem, statusesItem);
+        contextMenu.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(),
+                source.localToScreen(source.getBoundsInLocal()).getMaxY());
+    }
 
     @FXML
     void MenuItemProductsAction(ActionEvent event) {
         Manager.LoadSecondStageScene("products-table-view.fxml");
+
     }
 
     @FXML
     void MenuItemOrdersAction(ActionEvent event) {
-        Manager.LoadSecondStageScene("products-table-view.fxml");
+        Manager.LoadSecondStageScene("orders-table-view.fxml");
     }
 
     @FXML
@@ -91,7 +119,7 @@ public class MainWindowController implements Initializable {
         filterData();
     }
 
-@FXML
+    @FXML
     void TextFieldSearchAction(ActionEvent event) {
         filterData();
     }
@@ -102,7 +130,7 @@ public class MainWindowController implements Initializable {
         Stage newWindow = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("order-view.fxml"));
         Scene scene = null;
-try {
+        try {
             scene = new Scene(fxmlLoader.load(), screenSize.getWidth(), screenSize.getHeight());
             scene.getStylesheets().add("base-styles.css");
 
@@ -111,18 +139,21 @@ try {
         }
         newWindow.initOwner(Manager.mainStage);
         newWindow.initModality(Modality.WINDOW_MODAL);
+        newWindow.setMaximized(true);
         newWindow.setScene(scene);
         newWindow.showAndWait();
-    }
-    
-    @FXML
-    void BtnManageEntitiesAction(ActionEvent event) {
-        showManageEntitiesMenu(event);
+        System.out.println(mainBasket.getCount());
+        if (mainBasket.getCount() <= 0) {
+            mainWindowController.BtnBasket.setVisible(false);
+            mainWindowController.LabelBasketInfo.setVisible(false);
+            mainWindowController.LabelBasketInfo.setText("В корзине " + mainBasket.getCount() + " товаров");
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        LabelUser.setText("Вывошли как " + currentUser.getSecondName() + " " + Manager.currentUser.getFirstName());
+        mainWindowController = this;
+        LabelUser.setText("Вы вошли как " + currentUser.getSecondName() + " " + Manager.currentUser.getFirstName());
         List<Category> categoryList = categoryService.findAll();
         categoryList.add(0, new Category(0L, "Все"));
         ObservableList<Category> categories = FXCollections.observableArrayList(categoryList);
@@ -131,34 +162,36 @@ try {
         ComboBoxDiscount.setItems(discounts);
         ObservableList<String> orders = FXCollections.observableArrayList("по возрастанию цены", "по убыванию цены");
         ComboBoxSort.setItems(orders);
+        BtnBasket.setVisible(false);
+        LabelBasketInfo.setVisible(false);
         filterData();
     }
 
     public void loadProducts(Category category) {
         ListViewProducts.getItems().clear();
-        List<Product> products = productService.findAllWithDetails();
+        List<Product> products = productService.findAll();
         itemsCount = products.size();
         LabelInfo.setText("Всего записей " + itemsCount + " из " + itemsCount);
         if (category != null) {
             products = products.stream().filter(product -> product.getCategory().getCategoryId().equals(category.getCategoryId())).collect(Collectors.toList());
-           int filteredItemsCount = products.size();
+            int filteredItemsCount = products.size();
             LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
         }
         for (Product product : products) {
             ListViewProducts.getItems().add(product);
         }
         ListViewProducts.setCellFactory(lv -> new ProductCell());
-}
+    }
 
     void filterData() {
-        List<Product> products = productService.findAllWithDetails();
+        List<Product> products = productService.findAll();
         itemsCount = products.size();
         if (!ComboBoxCategory.getSelectionModel().isEmpty()) {
             Category category = ComboBoxCategory.getValue();
             if (category.getCategoryId() != 0) {
                 products = products.stream().filter(product -> product.getCategory().getCategoryId().equals(category.getCategoryId())).collect(Collectors.toList());
-           }
-}
+            }
+        }
         if (!ComboBoxDiscount.getSelectionModel().isEmpty()) {
             String discount = ComboBoxDiscount.getValue();
             if (discount.equals("0-9.99%")) {
@@ -189,33 +222,8 @@ try {
         for (Product product : products) {
             ListViewProducts.getItems().add(product);
         }
-        ListViewProducts.setCellFactory(lv ->new ProductCell());
-       int filteredItemsCount = products.size();
+        ListViewProducts.setCellFactory(lv -> new ProductCell());
+        int filteredItemsCount = products.size();
         LabelInfo.setText("Всего записей " + filteredItemsCount + " из " + itemsCount);
-    }
-    
-    private void showManageEntitiesMenu(ActionEvent event) {
-        Button source = (Button) event.getSource();
-        
-        ContextMenu contextMenu = new ContextMenu();
-        
-        MenuItem pickupPointsItem = new MenuItem("Пункты выдачи");
-        pickupPointsItem.setOnAction(e -> {
-            Manager.LoadSecondStageScene("pickuppoint-table-view.fxml");
-        });
-        
-        MenuItem rolesItem = new MenuItem("Роли");
-        rolesItem.setOnAction(e -> {
-            Manager.LoadSecondStageScene("role-table-view.fxml");
-        });
-        
-        MenuItem statusesItem = new MenuItem("Статусы");
-        statusesItem.setOnAction(e -> {
-            Manager.LoadSecondStageScene("status-table-view.fxml");
-        });
-        
-        contextMenu.getItems().addAll(pickupPointsItem, rolesItem, statusesItem);
-        contextMenu.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(), 
-                         source.localToScreen(source.getBoundsInLocal()).getMaxY());
     }
 }

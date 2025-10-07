@@ -19,6 +19,11 @@ public class PickupPoint {
     public PickupPoint() {
     }
 
+    public PickupPoint(Long pickupPointId, String address) {
+        this.pickupPointId = pickupPointId;
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,3 +58,4 @@ public class PickupPoint {
         this.address = address;
     }
 }
+

@@ -42,4 +42,10 @@ public class OrderProductService {
             return;
         orderProductDao.deleteById(id);
     }
+
+    public int getCount(String productId) {
+        if (productId == null)
+            return 0;
+        return orderProductDao.getCount(productId);
+    }
 }

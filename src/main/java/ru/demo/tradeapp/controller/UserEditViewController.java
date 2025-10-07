@@ -15,34 +15,34 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class UserEditViewController implements Initializable {
-    
+
     private UserService userService = new UserService();
     private RoleService roleService = new RoleService();
-    
+
     @FXML
     private Button BtnCancel;
-    
+
     @FXML
     private Button BtnSave;
-    
+
     @FXML
     private TextField TextFieldUsername;
-    
+
     @FXML
     private TextField TextFieldFirstName;
-    
+
     @FXML
     private TextField TextFieldSecondName;
-    
+
     @FXML
     private TextField TextFieldMiddleName;
-    
+
     @FXML
     private PasswordField PasswordFieldPassword;
-    
+
     @FXML
     private ComboBox<Role> ComboBoxRole;
-    
+
     @FXML
     private Label LabelId;
 
@@ -50,7 +50,7 @@ public class UserEditViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Заполняем комбо бокс ролями
         ComboBoxRole.setItems(javafx.collections.FXCollections.observableArrayList(roleService.findAll()));
-        
+
         if (Manager.currentUserEdit != null) {
             // Редактирование существующего пользователя
             LabelId.setText(Manager.currentUserEdit.getUsername());
@@ -60,7 +60,7 @@ public class UserEditViewController implements Initializable {
             TextFieldMiddleName.setText(Manager.currentUserEdit.getMiddleName());
             PasswordFieldPassword.setText(Manager.currentUserEdit.getPassword());
             ComboBoxRole.setValue(Manager.currentUserEdit.getRole());
-            
+
             // Блокируем изменение имени пользователя при редактировании
             TextFieldUsername.setEditable(false);
         } else {
@@ -83,17 +83,17 @@ public class UserEditViewController implements Initializable {
             showAlert("Ошибка", error, Alert.AlertType.ERROR);
             return;
         }
-        
+
         Manager.currentUserEdit.setUsername(TextFieldUsername.getText());
         Manager.currentUserEdit.setFirstName(TextFieldFirstName.getText());
         Manager.currentUserEdit.setSecondName(TextFieldSecondName.getText());
         Manager.currentUserEdit.setMiddleName(TextFieldMiddleName.getText());
         Manager.currentUserEdit.setPassword(PasswordFieldPassword.getText());
         Manager.currentUserEdit.setRole(ComboBoxRole.getValue());
-        
+
         try {
-            if (Manager.currentUserEdit.getUsername() != null && 
-                !Manager.currentUserEdit.getUsername().isEmpty()) {
+            if (Manager.currentUserEdit.getUsername() != null &&
+                    !Manager.currentUserEdit.getUsername().isEmpty()) {
                 // Обновление существующего пользователя
                 userService.update(Manager.currentUserEdit);
                 showAlert("Успех", "Пользователь успешно обновлен", Alert.AlertType.INFORMATION);

@@ -11,10 +11,11 @@
         <!-- Set Password -->
         <property name = "hibernate.connection.password">123123</property>
         <!-- Set Driver Name -->
-        <property name = "hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name = "hibernate.show_sql">true</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.show_sql">true</property>
         <!-- Optional: Auto-generate schema -->
-        <property name = "hibernate.hbm2ddl.auto">update</property>
+        <!-- <property name = "hibernate.hbm2ddl.auto">create</property> -->
         <mapping class="ru.demo.tradeapp.model.Category"/>
         <mapping class="ru.demo.tradeapp.model.Manufacturer"/>
         <mapping class="ru.demo.tradeapp.model.OrderProduct"/>

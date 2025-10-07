@@ -3,17 +3,17 @@ package ru.demo.tradeapp.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+
+import static java.lang.Math.abs;
 
 @Entity
-@Table(name = "orders", schema = "public")
+@Table(name = "order", schema = "public")
 
 public class Order {
 
     @Id
-    @Column(name = "order_id")
+    @Column(name = "id")
     private Long orderId;
 
     @Override
@@ -30,11 +30,11 @@ public class Order {
         return Objects.hash(orderId, status, pickupPoint, createDate, deliveryDate, user, getCode, orderProducts);
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pickuppoint_id", nullable = false)
     private PickupPoint pickupPoint;
 
@@ -44,23 +44,42 @@ public class Order {
     @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", nullable = true)
     private User user;
     @Column(name = "get_code", nullable = false)
     private Integer getCode;
 
-    @OneToMany(mappedBy = "order")
-    private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.PERSIST)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 
     public Order() {
     }
 
-    public Set<OrderProduct> getOrderProducts() {
+    public Double getTotalCostWithDiscount() {
+        double total = 0.;
+        for (OrderProduct orderProduct : orderProducts) {
+            total += orderProduct.getProduct().getPriceWithDiscount() * orderProduct.getCount();
+        }
+        return total;
+    }
+    public Double getTotalCostWithoutDiscount() {
+        double total = 0.;
+        for (OrderProduct orderProduct : orderProducts) {
+            total += orderProduct.getProduct().getCost() * orderProduct.getCount();
+        }
+        return total;
+    }
+
+    public Double getTotalDiscount() {
+        return abs(getTotalCostWithDiscount() - getTotalCostWithoutDiscount()) / getTotalCostWithoutDiscount() * 100;
+    }
+
+    public List<OrderProduct> getOrderProducts() {
         return orderProducts;
     }
 
-    public void setOrderProducts(Set<OrderProduct> orderProducts) {
+    public void setOrderProducts(List<OrderProduct> orderProducts) {
         this.orderProducts = orderProducts;
     }
 
