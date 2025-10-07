@@ -18,9 +18,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
-import ru.demo.tradeapp.model.PickupPoint;
 import ru.demo.tradeapp.model.User;
-import ru.demo.tradeapp.service.RoleService;
 import ru.demo.tradeapp.service.UserService;
 import ru.demo.tradeapp.util.Manager;
 
@@ -35,58 +33,78 @@ import java.util.ResourceBundle;
 
 public class UserTableViewController implements Initializable {
 
-    private static UserService userService = new UserService();
-    User newUser;
+    private static final UserService userService = new UserService();
+
     @FXML
     private Button BtnBack;
-
     @FXML
     private Button BtnAdd;
-
     @FXML
-private Button BtnDelete;
-
+    private Button BtnDelete;
     @FXML
     private Button BtnUpdate;
-
     @FXML
     private TableColumn<User, String> TableColumnUsername;
-
     @FXML
     private TableColumn<User, String> TableColumnFirstName;
-
     @FXML
     private TableColumn<User, String> TableColumnSecondName;
-
     @FXML
     private TableColumn<User, String> TableColumnMiddleName;
-
     @FXML
     private TableColumn<User, String> TableColumnRole;
-
     @FXML
     private TableView<User> TableViewUsers;
-
     @FXML
     private Label LabelUser;
+    @FXML
+    private MenuItem MenuItemPrintToPDF;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        initController();
+    }
+
+    public void initController() {
+        if (Manager.currentUser != null) {
+            LabelUser.setText(Manager.currentUser.getFirstName());
+        }
+        setCellValueFactories();
+        updateTable();
+        Manager.secondStage.setMinWidth(800);
+        Manager.secondStage.setMinHeight(600);
+    }
+
+    private void setCellValueFactories() {
+        TableColumnUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
+        TableColumnFirstName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
+        TableColumnSecondName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSecondName()));
+        TableColumnMiddleName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMiddleName()));
+        TableColumnRole.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole().getTitle()));
+    }
+
+    private void updateTable() {
+        List<User> users = userService.findAll();
+        ObservableList<User> observableUsers = FXCollections.observableArrayList(users);
+        TableViewUsers.setItems(observableUsers);
+    }
 
     @FXML
     void BtnBackAction(ActionEvent event) {
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("main-view.fxml"));
-        Scene scene = null;
         try {
-            scene = new Scene(fxmlLoader.load());
+            FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("main-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
             scene.getStylesheets().add("base-styles.css");
             Manager.secondStage.setScene(scene);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-       }
+            showAlert("Ошибка", "Не удалось загрузить главное окно: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
     void BtnAddAction(ActionEvent event) {
         Manager.currentUserEdit = null;
-        ShowEditUserWindow();
+        showEditUserWindow();
         updateTable();
     }
 
@@ -97,16 +115,15 @@ private Button BtnDelete;
             showAlert("Ошибка", "Выберите пользователя для удаления", Alert.AlertType.WARNING);
             return;
         }
-
         Optional<ButtonType> result = showConfirmDialog("Подтверждение удаления",
                 "Вы действительно хотите удалить пользователя " + user.getUsername() + "?");
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 userService.delete(user);
                 updateTable();
-                showAlert("Успех", "Пользователь успешно удален", Alert.AlertType.INFORMATION);
+                showAlert("Успех", "Пользователь успешно удалён", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
-                showAlert("Ошибка", "Не удалось удалить пользователя: " +e.getMessage(), Alert.AlertType.ERROR);
+                showAlert("Ошибка", "Не удалось удалить пользователя: " + e.getMessage(), Alert.AlertType.ERROR);
             }
         }
     }
@@ -118,125 +135,88 @@ private Button BtnDelete;
             showAlert("Ошибка", "Выберите пользователя для редактирования", Alert.AlertType.WARNING);
             return;
         }
-
         Manager.currentUserEdit = user;
-        ShowEditUserWindow();
+        showEditUserWindow();
         updateTable();
     }
 
-    void ShowEditUserWindow() {
-        Stage newWindow = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("user-edit-view.fxml"));
-
-        Scene scene =null;
+    private void showEditUserWindow() {
         try {
-            scene = new Scene(fxmlLoader.load());
+            Stage newWindow = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("user-edit-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
             scene.getStylesheets().add("base-styles.css");
+            newWindow.setTitle("Редактировать пользователя");
+            newWindow.initOwner(Manager.secondStage);
+            newWindow.initModality(Modality.WINDOW_MODAL);
+            newWindow.setScene(scene);
+            newWindow.setMinWidth(400);
+            newWindow.setMinHeight(500);
+            Manager.currentStage = newWindow;
+            newWindow.showAndWait();
+            Manager.currentStage = null;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            showAlert("Ошибка", "Не удалось открыть окно редактирования: " + e.getMessage(), Alert.AlertType.ERROR);
         }
-        newWindow.setTitle("Редактировать пользователя");
-        newWindow.initOwner(Manager.secondStage);
-newWindow.initModality(Modality.WINDOW_MODAL);
-        newWindow.setScene(scene);
-        newWindow.setMinWidth(400);
-        newWindow.setMinHeight(500);
-        Manager.currentStage = newWindow;
-        newWindow.showAndWait();
-        Manager.currentStage = null;
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initController();
-    }
-
-    public void initController() {
-        LabelUser.setText(Manager.currentUser.getFirstName());
-        setCellValueFactories();
-        updateTable();
-
-        Manager.secondStage.setMinWidth(800);
-        Manager.secondStage.setMinHeight(600);
-    }
-
-    void updateTable() {
-        List<User> users = userService.findAll();
-        ObservableList<User> observableUsers = FXCollections.observableArrayList(users);
-        TableViewUsers.setItems(observableUsers);
     }
 
     @FXML
-    private MenuItem MenuItemPrintToPDF;
-
-    @FXML
-    void BtnPrintToPDFAction(ActionEvent event) throws IOException, DocumentException {
-        PrintUserToPDF(newUser);
+    void BtnPrintToPDFAction(ActionEvent event) {
+        try {
+            exportUsersToPDF(Manager.mainStage);
+            showAlert("Успех", "PDF успешно сохранён", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            showAlert("Ошибка", "Ошибка при сохранении PDF: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
-    public static void PrintUserToPDF(User user) throws FileNotFoundException, DocumentException {
+    // метод экспорта (универсальный, не принимает User)
+    public static void exportUsersToPDF(Stage parentStage) throws FileNotFoundException, DocumentException {
         String FONT = "src/main/resources/fonts/arial.ttf";
-        RoleService roleService = new RoleService();
-        roleService.findAll();
         List<User> users = userService.findAll();
-
         FileChooser fileChooser = new FileChooser();
-
-        //Set extension filter for text files
-       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.PDF)", "*.pdf");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        //Show save file dialog
-        File file = fileChooser.showSaveDialog(Manager.mainStage);
+        fileChooser.setTitle("Сохранить PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf"));
+        File file = fileChooser.showSaveDialog(parentStage);
 
         if (file != null) {
-            Document document =new Document();
+            Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(file));
             Font font = FontFactory.getFont(FONT, "cp1251", BaseFont.EMBEDDED, 10);
             document.open();
             document.add(new Paragraph("Список пользователей", font));
             document.add(Chunk.NEWLINE);
-            PdfPTable table = new PdfPTable(new float[]{10, 20, 20, 20, 20, 20});
-            PdfPCell header = new PdfPCell();
-            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-            header.setBorderWidth(2);
-            header.setPhrase(new Phrase("№", font));
-            table.addCell(header);
-            header.setPhrase(new Phrase("Юзернейм",font));
-            table.addCell(header);
-            header.setPhrase(new Phrase("Имя", font));
-            table.addCell(header);
-            header.setPhrase(new Phrase("Фамилия", font));
-            table.addCell(header);
-            header.setPhrase(new Phrase("Отчество", font));
-            table.addCell(header);
-            header.setPhrase(new Phrase("Роль", font));
-            table.addCell(header);
+
+            PdfPTable table = new PdfPTable(new float[] {4, 15, 15, 15, 20, 20});
             table.setWidthPercentage(100);
+
+            String[] headers = {"№", "Юзернейм", "Имя", "Фамилия", "Отчество", "Наименование роли"};
+            for (String col : headers) {
+                PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                cell.setBorderWidth(2);
+                table.addCell(cell);
+            }
 
             int k = 1;
             for (User item : users) {
+                PdfPCell title = new PdfPCell();
                 table.addCell(String.valueOf(k));
-                table.addCell(item.getUsername());
-                table.addCell(item.getFirstName());
-                table.addCell(item.getSecondName());
-                table.addCell(item.getMiddleName());
-                table.addCell(item.getRole().getTitle());
+                title.setPhrase(new Phrase(item.getUsername(), font));
+                table.addCell(title);
+                title.setPhrase(new Phrase(item.getFirstName(), font));
+                table.addCell(title);
+                title.setPhrase(new Phrase(item.getSecondName(), font));
+                table.addCell(title);
+                title.setPhrase(new Phrase(item.getMiddleName(), font));
+                table.addCell(title);
+                title.setPhrase(new Phrase(item.getRole().getTitle(), font));
+                table.addCell(title);
                 k++;
             }
-
             document.add(table);
             document.close();
         }
-    }
-
-
-private void setCellValueFactories() {
-        TableColumnUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        TableColumnFirstName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
-        TableColumnSecondName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSecondName()));
-        TableColumnMiddleName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMiddleName()));
-        TableColumnRole.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole().getTitle()));
     }
 
     private void showAlert(String title, String content, Alert.AlertType type) {

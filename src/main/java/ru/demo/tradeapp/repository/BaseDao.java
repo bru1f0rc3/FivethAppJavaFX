@@ -7,7 +7,7 @@ import ru.demo.tradeapp.util.HibernateSessionFactoryUtil;
 import java.util.List;
 
 public abstract class BaseDao<T> {
-    private Class<T> clazz;
+    Class<T> clazz;
 
     public BaseDao(Class<T> clazz) {
         this.clazz = clazz;
