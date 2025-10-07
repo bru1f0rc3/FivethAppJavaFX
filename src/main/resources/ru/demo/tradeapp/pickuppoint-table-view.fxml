@@ -28,6 +28,7 @@
                </HBox.margin>
             </Button>
             <Button fx:id="BtnBack" mnemonicParsing="false" onAction="#BtnBackAction" text="Назад" />
+             <Button fx:id="BtnPrintToPDF" mnemonicParsing="false" onAction="#BtnPrintToPDFAction" text="Распечатать" />
          </children>
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

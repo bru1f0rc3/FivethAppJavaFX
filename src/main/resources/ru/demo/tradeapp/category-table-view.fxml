@@ -15,6 +15,7 @@
                         <Button fx:id="BtnUpdate" mnemonicParsing="false" onAction="#BtnUpdateAction" text="Изменить" />
                         <Button fx:id="BtnDelete" mnemonicParsing="false" onAction="#BtnDeleteAction" text="Удалить" />
                         <Button fx:id="BtnBack" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#BtnBackAction" text="Назад" textAlignment="RIGHT" />
+                        <Button fx:id="BtnPrintToPDF" mnemonicParsing="false" onAction="#BtnPrintToPDFAction" text="Распечатать" />
                     </items>
                 </ToolBar>
             </top>

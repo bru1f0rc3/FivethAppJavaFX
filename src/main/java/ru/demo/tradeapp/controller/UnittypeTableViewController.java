@@ -1,5 +1,10 @@
 package ru.demo.tradeapp.controller;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -10,13 +15,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
+import ru.demo.tradeapp.model.Category;
 import ru.demo.tradeapp.model.Unittype;
 import ru.demo.tradeapp.service.UnittypeService;
 import ru.demo.tradeapp.util.Manager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -25,8 +35,7 @@ import java.util.ResourceBundle;
 
 public class UnittypeTableViewController implements Initializable {
 
-    private UnittypeService unittypeService = new UnittypeService();
-    
+    private static UnittypeService unittypeService = new UnittypeService();
     @FXML
     private Button BtnBack;
 

@@ -1,5 +1,10 @@
 package ru.demo.tradeapp.controller;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,18 +12,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
 import ru.demo.tradeapp.model.PickupPoint;
+import ru.demo.tradeapp.model.Unittype;
 import ru.demo.tradeapp.service.PickupPointService;
 import ru.demo.tradeapp.util.Manager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -42,8 +48,8 @@ public class PickupPointTableViewController implements Initializable {
     @FXML
     private ListView<PickupPoint> ListViewPickupPoints;
 
-    private PickupPointService pickupPointService = new PickupPointService();
-
+    private static PickupPointService pickupPointService = new PickupPointService();
+    PickupPoint newPickupPoint;
     @FXML
     void BtnAddAction(ActionEvent event) {
         showEditDialog(null);
@@ -98,6 +104,54 @@ public class PickupPointTableViewController implements Initializable {
                 }
             }
         });
+    }
+
+    @FXML
+    private MenuItem MenuItemPrintToPDF;
+
+    @FXML
+    void BtnPrintToPDFAction(ActionEvent event) throws IOException, DocumentException {
+        PrintCategoryToPDF(newPickupPoint);
+    }
+
+    public static void PrintCategoryToPDF(PickupPoint pickupPoint) throws FileNotFoundException, DocumentException {
+        String FONT = "src/main/resources/fonts/arial.ttf";
+        List<PickupPoint> categories = pickupPointService.findAll();
+
+        FileChooser fileChooser = new FileChooser();
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(Manager.mainStage);
+        // ЭТО ДЛЯ ТОГО ЧТОБЫ РАСПЕЧАТАТЬ ДАННЫЕ В ПДФ ФАЙЛ
+        if (file != null) {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(file));
+            Font font = FontFactory.getFont(FONT, "cp1251", BaseFont.EMBEDDED, 10);
+            document.open();
+            document.add(new Paragraph("Список пунктов выдачи товаров", font));
+            document.add(Chunk.NEWLINE);
+            PdfPTable table = new PdfPTable(new float[]{10, 30});
+            PdfPCell header = new PdfPCell();
+            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            header.setBorderWidth(2);
+            header.setPhrase(new Phrase("№", font));
+            table.addCell(header);
+            header.setPhrase(new Phrase("Пункты выдачи:", font));
+            table.addCell(header);
+            table.setWidthPercentage(100);
+
+            int k = 1;
+            for (PickupPoint item : categories) {
+                table.addCell(String.valueOf(k));
+                PdfPCell title = new PdfPCell();
+                title.setPhrase(new Phrase(item.getTitle(), font));
+                table.addCell(title);
+                k++;
+            }
+
+            document.add(table);
+            document.close();
+        }
     }
 
     private void refreshList() {

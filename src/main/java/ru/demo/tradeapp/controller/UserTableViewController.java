@@ -1,5 +1,10 @@
 package ru.demo.tradeapp.controller;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,13 +14,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.demo.tradeapp.TradeApp;
+import ru.demo.tradeapp.model.PickupPoint;
 import ru.demo.tradeapp.model.User;
+import ru.demo.tradeapp.service.RoleService;
 import ru.demo.tradeapp.service.UserService;
 import ru.demo.tradeapp.util.Manager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -24,8 +35,8 @@ import java.util.ResourceBundle;
 
 public class UserTableViewController implements Initializable {
 
-    private UserService userService = new UserService();
-
+    private static UserService userService = new UserService();
+    User newUser;
     @FXML
     private Button BtnBack;
 
@@ -33,7 +44,7 @@ public class UserTableViewController implements Initializable {
     private Button BtnAdd;
 
     @FXML
-    private Button BtnDelete;
+private Button BtnDelete;
 
     @FXML
     private Button BtnUpdate;
@@ -69,7 +80,7 @@ public class UserTableViewController implements Initializable {
             Manager.secondStage.setScene(scene);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+       }
     }
 
     @FXML
@@ -95,7 +106,7 @@ public class UserTableViewController implements Initializable {
                 updateTable();
                 showAlert("Успех", "Пользователь успешно удален", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
-                showAlert("Ошибка", "Не удалось удалить пользователя: " + e.getMessage(), Alert.AlertType.ERROR);
+                showAlert("Ошибка", "Не удалось удалить пользователя: " +e.getMessage(), Alert.AlertType.ERROR);
             }
         }
     }
@@ -117,7 +128,7 @@ public class UserTableViewController implements Initializable {
         Stage newWindow = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(TradeApp.class.getResource("user-edit-view.fxml"));
 
-        Scene scene = null;
+        Scene scene =null;
         try {
             scene = new Scene(fxmlLoader.load());
             scene.getStylesheets().add("base-styles.css");
@@ -126,7 +137,7 @@ public class UserTableViewController implements Initializable {
         }
         newWindow.setTitle("Редактировать пользователя");
         newWindow.initOwner(Manager.secondStage);
-        newWindow.initModality(Modality.WINDOW_MODAL);
+newWindow.initModality(Modality.WINDOW_MODAL);
         newWindow.setScene(scene);
         newWindow.setMinWidth(400);
         newWindow.setMinHeight(500);
@@ -155,7 +166,72 @@ public class UserTableViewController implements Initializable {
         TableViewUsers.setItems(observableUsers);
     }
 
-    private void setCellValueFactories() {
+    @FXML
+    private MenuItem MenuItemPrintToPDF;
+
+    @FXML
+    void BtnPrintToPDFAction(ActionEvent event) throws IOException, DocumentException {
+        PrintUserToPDF(newUser);
+    }
+
+    public static void PrintUserToPDF(User user) throws FileNotFoundException, DocumentException {
+        String FONT = "src/main/resources/fonts/arial.ttf";
+        RoleService roleService = new RoleService();
+        roleService.findAll();
+        List<User> users = userService.findAll();
+
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter for text files
+       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.PDF)", "*.pdf");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(Manager.mainStage);
+
+        if (file != null) {
+            Document document =new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(file));
+            Font font = FontFactory.getFont(FONT, "cp1251", BaseFont.EMBEDDED, 10);
+            document.open();
+            document.add(new Paragraph("Список пользователей", font));
+            document.add(Chunk.NEWLINE);
+            PdfPTable table = new PdfPTable(new float[]{10, 20, 20, 20, 20, 20});
+            PdfPCell header = new PdfPCell();
+            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            header.setBorderWidth(2);
+            header.setPhrase(new Phrase("№", font));
+            table.addCell(header);
+            header.setPhrase(new Phrase("Юзернейм",font));
+            table.addCell(header);
+            header.setPhrase(new Phrase("Имя", font));
+            table.addCell(header);
+            header.setPhrase(new Phrase("Фамилия", font));
+            table.addCell(header);
+            header.setPhrase(new Phrase("Отчество", font));
+            table.addCell(header);
+            header.setPhrase(new Phrase("Роль", font));
+            table.addCell(header);
+            table.setWidthPercentage(100);
+
+            int k = 1;
+            for (User item : users) {
+                table.addCell(String.valueOf(k));
+                table.addCell(item.getUsername());
+                table.addCell(item.getFirstName());
+                table.addCell(item.getSecondName());
+                table.addCell(item.getMiddleName());
+                table.addCell(item.getRole().getTitle());
+                k++;
+            }
+
+            document.add(table);
+            document.close();
+        }
+    }
+
+
+private void setCellValueFactories() {
         TableColumnUsername.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
         TableColumnFirstName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
         TableColumnSecondName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSecondName()));

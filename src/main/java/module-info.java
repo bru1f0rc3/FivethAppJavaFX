@@ -9,6 +9,7 @@ module ru.trade.tradeapp {
     requires org.hibernate.validator;
     requires org.postgresql.jdbc;
     requires itextpdf;
+    requires javafx.graphics;
     opens ru.demo.tradeapp to javafx.fxml;
     opens ru.demo.tradeapp.model to org.hibernate.orm.core, javafx.base;
     exports ru.demo.tradeapp;

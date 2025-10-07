@@ -14,7 +14,7 @@ import java.util.Objects;
 // POJO class
 public class User {
     @Id
-    @Column(name = "username")
+    @Column(name= "username")
     private String username;
 
     @Column(name = "first_name")
@@ -26,11 +26,11 @@ public class User {
 
     @Column(name = "password")
     private String password;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    public String getUsername() {
+   public String getUsername() {
         return username;
     }
 
@@ -62,7 +62,7 @@ public class User {
         this.middleName = middleName;
     }
 
-    public String getPassword() {
+   public String getPassword() {
         return password;
     }
 
@@ -88,7 +88,7 @@ public class User {
     @Override
     public int hashCode() {
         final int hashCode = 17 * username.hashCode() + 31 * firstName.hashCode() + 17 * secondName.hashCode() + 31 * middleName.hashCode() + 17 * password.hashCode();
-        return hashCode;
+       return hashCode;
     }
 
 
